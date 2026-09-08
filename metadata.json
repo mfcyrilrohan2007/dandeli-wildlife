@@ -1,0 +1,6 @@
+{
+  "name": "Dandeli Wilds - River & Rainforest Expeditions",
+  "description": "Premium nature and adventure travel agency in Dandeli, Karnataka. Kali River white-water rafting, jungle stays, wildlife safaris, and curated group expeditions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
