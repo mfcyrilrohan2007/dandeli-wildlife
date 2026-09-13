@@ -17,6 +17,7 @@ import {
 import { getActivityBySlug, getCleanActivitySlug } from '../utils/slugHelpers';
 import { ACTIVITIES } from '../data/dandeliData';
 import { optimizeCloudinaryUrl } from '../utils/imageOptimization';
+import { DetailBackButton } from '../components/DetailBackButton';
 
 interface ActivityDetailPageProps {
   onOpenEnquiry: (preselectedItem?: string) => void;
@@ -65,16 +66,9 @@ export const ActivityDetailPage: React.FC<ActivityDetailPageProps> = ({ onOpenEn
           <div className="absolute inset-0 bg-gradient-to-t from-[#18191B] via-[#18191B]/60 to-black/70" />
         </div>
 
-        {/* Top Back Link */}
+        {/* Top Back Navigation */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-4">
-          <button
-            type="button"
-            onClick={() => navigate('/activities')}
-            className="inline-flex items-center gap-2 py-2 px-4 rounded-xl bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-stone-200 text-xs font-sans font-medium transition-all active:scale-95 cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to All Activities</span>
-          </button>
+          <DetailBackButton label="Back to Activities" fallbackPath="/activities" variant="dark-hero" />
         </div>
 
         {/* Hero Bottom Content */}

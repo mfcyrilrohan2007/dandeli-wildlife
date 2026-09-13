@@ -23,6 +23,8 @@ import {
 import { getPackageBySlug, getCleanPackageSlug, getActivityBySlug } from '../utils/slugHelpers';
 import { TRAVEL_PACKAGES, ACTIVITIES } from '../data/dandeliData';
 import { optimizeCloudinaryUrl } from '../utils/imageOptimization';
+import { PackageCardMetadata, parseEditorialDuration } from '../components/PackageCardMetadata';
+import { DetailBackButton } from '../components/DetailBackButton';
 
 interface PackageDetailPageProps {
   onOpenEnquiry: (preselectedItem?: string) => void;
@@ -83,26 +85,33 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({ onOpenEnqu
 
         {/* Top Back Navigation */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-4">
-          <button
-            type="button"
-            onClick={() => navigate('/packages')}
-            className="inline-flex items-center gap-2 py-2 px-4 rounded-xl bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-stone-200 text-xs font-sans font-medium transition-all active:scale-95 cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Package Catalogue</span>
-          </button>
+          <DetailBackButton label="Back to Packages" fallbackPath="/packages" variant="dark-hero" />
         </div>
 
         {/* Hero Bottom Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-12 sm:pb-16 space-y-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/25 text-white text-xs font-sans font-semibold tracking-wide uppercase">
-              {pkg.tripStyle || pkg.badge}
+          <div className="flex flex-wrap items-center gap-3">
+            <span
+              className="inline-flex items-center font-manrope font-bold text-xs text-[#FAF7F2] tracking-[0.035em] uppercase px-3 py-1.5 rounded-[7px] select-none shadow-[0_1px_2px_rgba(0,0,0,0.2)]"
+              style={{ backgroundColor: '#9E4E32' }}
+            >
+              {pkg.badge || pkg.tripStyle}
             </span>
-            <span className="px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-stone-200 text-xs font-sans font-medium flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-[#EAE3D8]" />
-              <span>{pkg.duration}</span>
-            </span>
+            {(() => {
+              const dur = parseEditorialDuration(pkg.duration);
+              if (!dur) return null;
+              return (
+                <span className="font-manrope font-semibold text-sm text-[#FAF7F2] tracking-[-0.01em] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                  {'single' in dur ? dur.single : (
+                    <>
+                      <span>{dur.days}</span>
+                      <span className="mx-1.5 opacity-60 font-normal text-xs select-none">·</span>
+                      <span>{dur.nights}</span>
+                    </>
+                  )}
+                </span>
+              );
+            })()}
           </div>
 
           <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight text-white max-w-4xl leading-tight">
@@ -494,16 +503,12 @@ export const PackageDetailPage: React.FC<PackageDetailPageProps> = ({ onOpenEnqu
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-                    <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-1 rounded-md bg-white/90 text-stone-900 text-[10px] font-sans font-semibold">
-                        {rel.tripStyle || rel.badge}
-                      </span>
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/35" />
+                    <PackageCardMetadata badge={rel.badge || rel.tripStyle} duration={rel.duration} />
                     <div className="absolute bottom-3 left-4 right-4 text-white">
                       <h3 className="font-serif text-xl font-normal">{rel.title}</h3>
                       <p className="text-stone-300 text-xs font-sans">
-                        ₹{rel.pricePerPerson.toLocaleString()} • {rel.duration}
+                        ₹{rel.pricePerPerson.toLocaleString()} per person
                       </p>
                     </div>
                   </div>

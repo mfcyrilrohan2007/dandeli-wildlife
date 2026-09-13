@@ -20,6 +20,7 @@ import {
 import { getTripPlanBySlug } from '../utils/slugHelpers';
 import { TRIP_PLANS } from '../components/FindYourTrip';
 import { TRIP_PLANNER_DATA, PlannerCategoryKey } from '../data/tripPlannerData';
+import { DetailBackButton } from '../components/DetailBackButton';
 
 interface TripPlanDetailPageProps {
   onOpenEnquiry: (preselectedItem?: string) => void;
@@ -66,16 +67,9 @@ export const TripPlanDetailPage: React.FC<TripPlanDetailPageProps> = ({ onOpenEn
           <div className="absolute inset-0 bg-gradient-to-t from-[#18191B] via-[#18191B]/60 to-black/70" />
         </div>
 
-        {/* Top Back Link */}
+        {/* Top Back Navigation */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-4">
-          <button
-            type="button"
-            onClick={() => navigate('/trip-plans')}
-            className="inline-flex items-center gap-2 py-2 px-4 rounded-xl bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-stone-200 text-xs font-sans font-medium transition-all active:scale-95 cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Trip Planning Tool</span>
-          </button>
+          <DetailBackButton label="Back to Trip Plans" fallbackPath="/trip-plans" variant="dark-hero" />
         </div>
 
         {/* Hero Bottom Content */}
@@ -248,7 +242,10 @@ export const TripPlanDetailPage: React.FC<TripPlanDetailPageProps> = ({ onOpenEn
                             className="w-full h-full object-cover"
                             referrerPolicy="no-referrer"
                           />
-                          <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-[#2E6B68] text-white text-[10px] font-sans uppercase">
+                          <span
+                            className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-[6px] text-[#FAF7F2] font-manrope font-bold text-[10px] tracking-[0.035em] uppercase shadow-[0_1px_2px_rgba(0,0,0,0.18)] select-none"
+                            style={{ backgroundColor: '#9E4E32' }}
+                          >
                             {pkg.badge}
                           </span>
                         </div>

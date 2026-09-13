@@ -26,6 +26,7 @@ import { TRAVEL_PACKAGES } from '../data/dandeliData';
 import { getCleanPackageSlug } from '../utils/slugHelpers';
 import { TravelPackage } from '../types';
 import { optimizeCloudinaryUrl } from '../utils/imageOptimization';
+import { PackageCardMetadata } from '../components/PackageCardMetadata';
 
 interface PackagesPageProps {
   onOpenEnquiry?: (preselectedItem?: string) => void;
@@ -57,16 +58,8 @@ const PackageCatalogueCard: React.FC<{
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/30" />
 
-          {/* Top Badges */}
-          <div className="absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4 flex items-center justify-between gap-2">
-            <span className="px-3 py-1 rounded-full bg-white/95 text-[#19231D] text-[11px] font-sans font-semibold tracking-wide shadow-sm backdrop-blur-sm">
-              {pkg.tripStyle || pkg.badge}
-            </span>
-            <span className="px-3 py-1 rounded-full bg-black/70 border border-white/20 text-white text-[11px] font-sans font-medium backdrop-blur-sm flex items-center gap-1.5">
-              <Clock className="w-3 h-3 text-[#EAE3D8]" />
-              <span>{pkg.duration}</span>
-            </span>
-          </div>
+          {/* Editorial Package Metadata: Printed terracotta tag + clean natural duration */}
+          <PackageCardMetadata badge={pkg.badge || pkg.tripStyle} duration={pkg.duration} />
 
           {/* Bottom Title on Image */}
           <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 text-white">

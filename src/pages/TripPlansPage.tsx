@@ -32,6 +32,7 @@ import {
   PlannerCategoryKey,
   PlannerCategoryData,
 } from '../data/tripPlannerData';
+import { PackageCardMetadata } from '../components/PackageCardMetadata';
 
 interface TripPlansPageProps {
   onOpenEnquiry?: (preselectedItem?: string) => void;
@@ -583,12 +584,8 @@ export const TripPlansPage: React.FC<TripPlansPageProps> = ({ onOpenEnquiry }) =
                               className="w-full h-full object-cover"
                               referrerPolicy="no-referrer"
                             />
-                            <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-[#2E6B68] text-white text-[10px] font-sans font-semibold uppercase">
-                              {pkg.badge}
-                            </span>
-                            <span className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-sm text-white text-[10px] font-sans">
-                              {pkg.duration}
-                            </span>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/30" />
+                            <PackageCardMetadata badge={pkg.badge} duration={pkg.duration} />
                           </div>
 
                           <div className="space-y-1">

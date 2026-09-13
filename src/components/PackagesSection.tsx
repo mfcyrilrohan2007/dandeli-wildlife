@@ -15,6 +15,7 @@ import {
 import { TravelPackage } from '../types';
 import { TRAVEL_PACKAGES } from '../data/dandeliData';
 import { PackageDetailModal } from './PackageDetailModal';
+import { PackageCardMetadata } from './PackageCardMetadata';
 
 interface PackagesSectionProps {
   onOpenEnquiry: (preselectedItem?: string) => void;
@@ -214,16 +215,8 @@ export const PackagesSection: React.FC<PackagesSectionProps> = ({
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
-                    {/* Top Floating Chips */}
-                    <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between">
-                      <span className="px-2.5 py-1 rounded-full bg-[#122A1E]/90 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono uppercase tracking-wider backdrop-blur-md">
-                        {pkg.badge}
-                      </span>
-                      <span className="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-mono backdrop-blur-md flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-emerald-400" />
-                        {pkg.duration}
-                      </span>
-                    </div>
+                    {/* Top Metadata: Editorial Magazine Label + Proportional Duration */}
+                    <PackageCardMetadata badge={pkg.badge} duration={pkg.duration} />
 
                     {/* Bottom Title on Image */}
                     <div className="absolute bottom-3.5 left-4 right-4 text-white">
