@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowUpRight,
@@ -9,20 +9,33 @@ import {
   Clock,
   Sparkles,
   ShieldCheck,
-  Waves,
-  TreePine,
   CheckCircle2,
   Calendar,
   ChevronRight,
-  Heart,
+  ChevronLeft,
+  X,
   Phone,
+  Mail,
   Camera,
+  Star,
+  Send,
+  ExternalLink,
+  Award,
+  Headphones,
+  Trees,
+  Bed,
+  Utensils,
+  Flame,
 } from 'lucide-react';
 import { Hero } from '../components/Hero';
-import { ACTIVITIES, TRAVEL_PACKAGES, RESORT_STAYS } from '../data/dandeliData';
-import { TRIP_PLANS } from '../components/FindYourTrip';
+import {
+  ACTIVITIES,
+  TRAVEL_PACKAGES,
+  RESORT_STAYS,
+  TESTIMONIALS,
+} from '../data/dandeliData';
 import { getCleanPackageSlug, getCleanActivitySlug } from '../utils/slugHelpers';
-import { DANDELI_IMAGES, getThumbUrl } from '../data/imageLibrary';
+import { DANDELI_IMAGES, getThumbUrl, getHighResUrl } from '../data/imageLibrary';
 import { optimizeCloudinaryUrl } from '../utils/imageOptimization';
 import { PackageCardMetadata } from '../components/PackageCardMetadata';
 
@@ -31,398 +44,143 @@ interface HomePageProps {
 }
 
 export const HomePage: React.FC<HomePageProps> = ({ onOpenEnquiry }) => {
-  // Only 2-3 featured packages on home
-  const featuredPackages = TRAVEL_PACKAGES.slice(0, 3);
-  // Curated 4 activities on home
-  const featuredActivities = ACTIVITIES.slice(0, 4);
-  // Curated 3 resorts on home
+  // 1. Featured Packages: 4 distinct packages (Weekend, Rapids, Family, Squad)
+  const featuredPackages = TRAVEL_PACKAGES.slice(0, 4);
+
+  // 2. Featured Activities: 6 major adventures
+  const featuredActivities = [
+    ACTIVITIES.find((a) => a.id === 'white-water-rafting'),
+    ACTIVITIES.find((a) => a.id === 'jungle-safari'),
+    ACTIVITIES.find((a) => a.id === 'kayaking'),
+    ACTIVITIES.find((a) => a.id === 'river-crossing-zipline'),
+    ACTIVITIES.find((a) => a.id === 'camping'),
+    ACTIVITIES.find((a) => a.id === 'natural-jacuzzi'),
+  ].filter(Boolean) as typeof ACTIVITIES;
+
+  // 3. Featured Resorts: 3 distinct accommodation categories
   const featuredResorts = RESORT_STAYS.slice(0, 3);
 
+  // 4. Curated Gallery: 6 diverse photo moments
+  const curatedGallery = [
+    DANDELI_IMAGES[15], // Rafting rapids
+    DANDELI_IMAGES[33], // Wildlife safari / tiger
+    DANDELI_IMAGES[9],  // Pool deck riverside
+    DANDELI_IMAGES[27], // Zipline river crossing
+    DANDELI_IMAGES[23], // Tandem kayaking
+    DANDELI_IMAGES[4],  // Night cottage & campfire
+  ].filter(Boolean);
+
+  // Lightbox state for homepage gallery
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+
+  const handlePrevLightbox = () => {
+    if (lightboxIndex === null) return;
+    setLightboxIndex(lightboxIndex > 0 ? lightboxIndex - 1 : curatedGallery.length - 1);
+  };
+
+  const handleNextLightbox = () => {
+    if (lightboxIndex === null) return;
+    setLightboxIndex(lightboxIndex < curatedGallery.length - 1 ? lightboxIndex + 1 : 0);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) handleNextLightbox();
+      else handlePrevLightbox();
+    }
+    setTouchStartX(null);
+  };
+
+  // Contact Form State
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    travelDate: '',
+    travellerCount: '2 Persons',
+    message: '',
+  });
+
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const validateContactForm = () => {
+    const errors: Record<string, string> = {};
+    if (!contactForm.name.trim()) errors.name = 'Please enter your name.';
+    if (!contactForm.phone.trim()) {
+      errors.phone = 'Please enter your phone number.';
+    } else if (!/^\+?[\d\s-]{10,15}$/.test(contactForm.phone.trim())) {
+      errors.phone = 'Please enter a valid 10-digit number.';
+    }
+    return errors;
+  };
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const errors = validateContactForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    setFormErrors({});
+    setIsSubmitting(true);
+
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setFormSubmitted(true);
+    }, 600);
+  };
+
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#1C1D1F]">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-[#FAF7F2] text-[#1C1D1F] overflow-x-hidden">
+      {/* =========================================================================
+          1. HERO SECTION (Video Background + Mobile-First Design)
+          ========================================================================= */}
       <Hero onOpenEnquiry={onOpenEnquiry} />
 
-      {/* 0. TRAVELER ORIENTATION & 3-STEP TRIP ROADMAP */}
-      <section className="py-10 sm:py-12 bg-white border-b border-[#E5DFD7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          {/* Quick Orientation Pill & Summary */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 p-6 sm:p-8 rounded-2xl bg-[#FAF7F2] border border-[#E5DFD7]">
-            <div className="space-y-2 max-w-3xl">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-sans font-medium uppercase tracking-widest text-[#2E6B68] px-2 py-0.5 rounded bg-[#2E6B68]/10">
-                  First-Time Traveler Guide
-                </span>
-                <span className="text-stone-400 text-xs">•</span>
-                <span className="text-xs font-sans text-stone-500">Uttara Kannada, Western Ghats</span>
-              </div>
-              <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#1C1D1F]">
-                Dandeli at a Glance
-              </h2>
-              <p className="text-stone-600 text-xs sm:text-sm leading-relaxed font-sans font-light">
-                Nestled deep in the Western Ghats rainforests of North Karnataka, Dandeli is South India’s adventure capital. Driven by daily water releases from the Supa Dam, the untamed Kali River offers South India’s only perennial Class III & IV white water rapids, flanked by Anshi National Park, home to black panthers, hornbills, and ancient teak canopies.
-              </p>
-            </div>
-
-            {/* Quick Key Facts */}
-            <div className="grid grid-cols-2 gap-3 shrink-0 w-full lg:w-auto text-xs font-sans">
-              <div className="p-3 rounded-xl bg-white border border-[#E5DFD7] space-y-1">
-                <div className="flex items-center gap-1.5 text-[#2E6B68] font-medium">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>Travel Time</span>
-                </div>
-                <p className="text-stone-600 text-[11px]">2.5h from Hubli/Belgaum • 3h from Goa</p>
-              </div>
-              <div className="p-3 rounded-xl bg-white border border-[#E5DFD7] space-y-1">
-                <div className="flex items-center gap-1.5 text-[#C46849] font-medium">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>Prime Season</span>
-                </div>
-                <p className="text-stone-600 text-[11px]">Oct–May (Rapids & Safaris)</p>
-              </div>
-            </div>
-          </div>
-
-          {/* 3-Step Simple Way to Plan */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-sans uppercase tracking-widest text-stone-500 font-medium">
-                How Trip Planning Works in 3 Simple Steps
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Link
-                to="/explore"
-                className="group p-5 rounded-2xl bg-[#FAF7F2] hover:bg-[#F3ECE1] border border-[#E5DFD7] hover:border-[#2E6B68]/40 transition-all flex flex-col justify-between space-y-3"
-              >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="w-7 h-7 rounded-lg bg-[#2E6B68] text-white flex items-center justify-center font-mono text-xs font-medium">
-                      01
-                    </span>
-                    <span className="text-[11px] font-sans text-[#2E6B68] font-medium group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                      Explore Realms <ArrowRight className="w-3 h-3" />
-                    </span>
-                  </div>
-                  <h3 className="font-serif text-lg font-normal text-[#1C1D1F]">
-                    Choose Your Environment
-                  </h3>
-                  <p className="text-xs text-stone-600 leading-relaxed font-sans font-light">
-                    From white water rapids in Ganeshgudi to Anshi Tiger Reserve safaris and volcanic monoliths at Syntheri.
-                  </p>
-                </div>
-              </Link>
-
-              <Link
-                to="/packages"
-                className="group p-5 rounded-2xl bg-[#FAF7F2] hover:bg-[#F3ECE1] border border-[#E5DFD7] hover:border-[#2E6B68]/40 transition-all flex flex-col justify-between space-y-3"
-              >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="w-7 h-7 rounded-lg bg-[#C46849] text-white flex items-center justify-center font-mono text-xs font-medium">
-                      02
-                    </span>
-                    <span className="text-[11px] font-sans text-[#C46849] font-medium group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                      Compare Deals <ArrowRight className="w-3 h-3" />
-                    </span>
-                  </div>
-                  <h3 className="font-serif text-lg font-normal text-[#1C1D1F]">
-                    Pick All-Inclusive or A La Carte
-                  </h3>
-                  <p className="text-xs text-stone-600 leading-relaxed font-sans font-light">
-                    Save up to 35% with complete stay packages (cottage + 3 buffet meals + rafting) or book standalone resorts.
-                  </p>
-                </div>
-              </Link>
-
-              <Link
-                to="/contact"
-                className="group p-5 rounded-2xl bg-[#FAF7F2] hover:bg-[#F3ECE1] border border-[#E5DFD7] hover:border-[#2E6B68]/40 transition-all flex flex-col justify-between space-y-3"
-              >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="w-7 h-7 rounded-lg bg-[#1C1D1F] text-white flex items-center justify-center font-mono text-xs font-medium">
-                      03
-                    </span>
-                    <span className="text-[11px] font-sans text-[#1C1D1F] font-medium group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                      Lock In Dates <ArrowRight className="w-3 h-3" />
-                    </span>
-                  </div>
-                  <h3 className="font-serif text-lg font-normal text-[#1C1D1F]">
-                    Confirm with Native River Desk
-                  </h3>
-                  <p className="text-xs text-stone-600 leading-relaxed font-sans font-light">
-                    We match your travel dates with official Supa Dam water discharge timings and forest reserve permit quotas.
-                  </p>
-                </div>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 1. SHORT EXPLORE PREVIEW */}
-      <section className="py-16 sm:py-24 bg-[#F4EFEA] border-b border-[#E5DFD7]">
+      {/* =========================================================================
+          2. PACKAGES SECTION
+          ========================================================================= */}
+      <section
+        id="packages-section"
+        className="py-16 sm:py-24 bg-[#FAF7F2] border-b border-[#E5DFD7]"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+          {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
-              <span className="text-xs font-sans uppercase tracking-widest text-[#2E6B68] font-medium flex items-center gap-1.5">
-                <Compass className="w-3.5 h-3.5" />
-                <span>Field Preview • Chapter I</span>
-              </span>
-              <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#1C1D1F]">
-                Explore Dandeli
-              </h2>
-              <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans">
-                South India’s wildest river gorge, contiguous rainforests, and centuries-old Western Ghats lore. Choose your environment.
-              </p>
-            </div>
-            <Link
-              to="/explore"
-              className="inline-flex items-center gap-2 self-start md:self-auto py-3 px-6 rounded-xl bg-[#1C1D1F] hover:bg-[#2B2C2E] text-white text-xs font-sans font-medium uppercase tracking-wider transition-all shadow-sm active:scale-95"
-            >
-              <span>Explore Dandeli</span>
-              <ArrowUpRight className="w-4 h-4 text-[#EAE3D8]" />
-            </Link>
-          </div>
-
-          {/* 3 Highlight Categories */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                title: 'White Water Rafting',
-                slug: 'white-water-rafting',
-                image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788989523/dandeli_rafting_4k.png',
-                tag: 'Class III & IV Rapids',
-                desc: '9.5 km of surging mountain dam releases on the untamed Kali River.',
-              },
-              {
-                title: 'Jungle Safari',
-                slug: 'jungle-safari',
-                image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788989523/dandeli_tiger_4K.png',
-                tag: 'Anshi National Park',
-                desc: 'Quiet tracking of tigers, hornbills, and giant squirrels with forest rangers.',
-              },
-              {
-                title: 'Wilderness Camping',
-                slug: 'camping',
-                image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788989523/dandeli_cottages_night_4K_faithful.png',
-                tag: 'Riverbank Starlight',
-                desc: 'Fall asleep to cicada choruses and teak campfires under dark skies.',
-              },
-            ].map((cat) => (
-              <Link
-                key={cat.slug}
-                to={`/activities/${cat.slug}`}
-                className="group relative rounded-2xl overflow-hidden bg-white border border-[#E5DFD7] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full"
-              >
-                <div className="relative h-56 overflow-hidden bg-stone-200">
-                  <img
-                    src={cat.image}
-                    alt={cat.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md text-[10px] font-sans font-medium uppercase tracking-wider text-[#FAF7F2] border border-white/15">
-                    {cat.tag}
-                  </span>
-                  <div className="absolute bottom-3 left-4 right-4 text-white">
-                    <h3 className="font-serif text-2xl font-normal">{cat.title}</h3>
-                  </div>
-                </div>
-                <div className="p-5 flex flex-col justify-between flex-1 space-y-4">
-                  <p className="text-stone-600 text-xs sm:text-sm leading-relaxed font-sans">{cat.desc}</p>
-                  <div className="flex items-center justify-between text-xs font-medium text-[#2E6B68] group-hover:text-[#1F4E5B] font-sans">
-                    <span>View Chapter</span>
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 2. FEATURED ACTIVITIES PREVIEW (Chapter II) */}
-      <section className="py-16 sm:py-24 bg-[#FAF7F2]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-3 max-w-2xl">
-              <span className="text-xs font-sans uppercase tracking-widest text-[#2E6B68] font-medium flex items-center gap-1.5">
-                <Waves className="w-3.5 h-3.5" />
-                <span>River & Canopy Action • Chapter II</span>
-              </span>
-              <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#1C1D1F]">
-                Featured Activities
-              </h2>
-              <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-light">
-                From high-adrenaline Class IV rapids on the Kali River to silent dawn kayaking through mist, explore Dandeli’s signature outdoor adventures.
-              </p>
-            </div>
-            <Link
-              to="/activities"
-              className="inline-flex items-center gap-2 self-start md:self-auto py-3 px-6 rounded-xl bg-[#1C1D1F] hover:bg-[#2B2C2E] text-white text-xs font-sans font-medium uppercase tracking-wider transition-all shadow-sm active:scale-95"
-            >
-              <span>View All 14 Activities</span>
-              <ArrowUpRight className="w-4 h-4 text-[#EAE3D8]" />
-            </Link>
-          </div>
-
-          {/* 4 Activities Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredActivities.map((act) => {
-              const cleanSlug = getCleanActivitySlug(act.id);
-              return (
-                <Link
-                  key={act.id}
-                  to={`/activities/${cleanSlug}`}
-                  className="group rounded-2xl overflow-hidden bg-white border border-[#E5DFD7] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
-                >
-                  <div className="relative h-48 overflow-hidden bg-stone-200">
-                    <img
-                      src={optimizeCloudinaryUrl(act.image, 540)}
-                      alt={act.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-[10px] font-sans text-[#FAF7F2] uppercase font-medium">
-                      {act.category}
-                    </span>
-                    <span className="absolute bottom-2.5 right-2.5 px-2.5 py-0.5 rounded-md bg-[#1C1D1F] text-white font-mono text-xs font-semibold">
-                      ₹{act.pricePerPerson}
-                    </span>
-                  </div>
-
-                  <div className="p-5 space-y-2 flex-1 flex flex-col justify-between">
-                    <div>
-                      <h3 className="font-serif text-xl font-normal text-[#1C1D1F] group-hover:text-[#2E6B68] transition-colors">
-                        {act.title}
-                      </h3>
-                      <p className="text-stone-600 text-xs line-clamp-2 mt-1 leading-relaxed font-sans font-light">
-                        {act.tagline}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500 font-sans">
-                      <span>{act.duration}</span>
-                      <span className="text-[#2E6B68] font-medium flex items-center gap-0.5">
-                        Details <ChevronRight className="w-3.5 h-3.5" />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* EDITORIAL STORYTELLING BREAK: The Living River & Ancient Canopy */}
-      <section className="py-14 sm:py-20 bg-[#18191B] text-white overflow-hidden relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Story Block */}
-            <div className="lg:col-span-6 space-y-5">
-              <span className="text-xs font-sans uppercase tracking-widest text-[#EAE3D8] font-medium flex items-center gap-1.5">
-                <Waves className="w-3.5 h-3.5 text-[#2E6B68]" />
-                <span>The Rhythm of the Current • Western Ghats</span>
-              </span>
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-white leading-tight">
-                Where 9.5 km of mountain rapids meet 1,300 sq km of ancient rainforest.
-              </h2>
-              <p className="text-stone-300 text-sm sm:text-base leading-relaxed font-sans font-light">
-                The Kali River is South India’s only perennial white-water corridor. Every morning around 9:00 AM, the Supa hydroelectric dam releases cold reservoir waters down the gorge, transforming calm jade currents into surging Class III and IV rapids across granite boulders.
-              </p>
-              <p className="text-stone-300 text-sm leading-relaxed font-sans font-light">
-                By 4:00 PM, the water recedes into mirror-like stillness. Hornbills fly across the teak canopy, kingfishers dive in the shallows, and local boatmen take travelers on silent coracle drifts under the mist.
-              </p>
-              <div className="grid grid-cols-3 gap-3 pt-2">
-                <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-center">
-                  <span className="font-mono text-lg sm:text-xl font-semibold text-[#EAE3D8] block">9.5 km</span>
-                  <span className="text-[10px] text-stone-400 font-sans uppercase tracking-wider">River Descent</span>
-                </div>
-                <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-center">
-                  <span className="font-mono text-lg sm:text-xl font-semibold text-[#EAE3D8] block">Class IV</span>
-                  <span className="text-[10px] text-stone-400 font-sans uppercase tracking-wider">Peak Rapids</span>
-                </div>
-                <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-center">
-                  <span className="font-mono text-lg sm:text-xl font-semibold text-[#EAE3D8] block">300+</span>
-                  <span className="text-[10px] text-stone-400 font-sans uppercase tracking-wider">Bird Species</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Authentic Photographic Diptych */}
-            <div className="lg:col-span-6 grid grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <div className="rounded-2xl overflow-hidden aspect-[4/5] bg-stone-900 border border-white/10 shadow-lg">
-                  <img
-                    src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788988975/7c6871cf-f09f-49dd-a861-b5e76c52736a.png"
-                    alt="Authentic Kali River rapids navigated by rafters in Dandeli"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover brightness-[0.95] contrast-[1.05]"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-                <p className="text-[11px] text-stone-400 font-sans italic text-center">
-                  Cresting churning Kali River foam
-                </p>
-              </div>
-              <div className="space-y-3 pt-6 sm:pt-10">
-                <div className="rounded-2xl overflow-hidden aspect-[4/5] bg-stone-900 border border-white/10 shadow-lg">
-                  <img
-                    src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788988863/d2ce9490-3b38-45f2-883e-101f102eb22b.png"
-                    alt="River crew maneuvering through churning rapids"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover brightness-[0.95] contrast-[1.05]"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-                <p className="text-[11px] text-stone-400 font-sans italic text-center">
-                  Lead captains guiding rapid descents
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. FEATURED PACKAGES PREVIEW (Chapter III) */}
-      <section className="py-16 sm:py-24 bg-[#EFE9E1] border-y border-[#E5DFD7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-3 max-w-2xl">
-              <span className="text-xs font-sans uppercase tracking-widest text-[#2E6B68] font-medium flex items-center gap-1.5">
+              <span className="text-xs font-manrope uppercase tracking-widest text-[#2E6B68] font-semibold flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>All-Inclusive Value • Chapter III</span>
+                <span>Curated Itineraries</span>
               </span>
               <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#1C1D1F]">
-                Featured Packages
+                Choose Your Dandeli Escape
               </h2>
               <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-light">
-                Handcrafted itineraries combining riverside accommodations, home-style Karnataka buffet meals, safety gear, and licensed guides. Save up to 35% compared to booking separately.
+                Thoughtfully planned experiences for every kind of traveller.
               </p>
             </div>
+
             <Link
               to="/packages"
-              className="inline-flex items-center gap-2 self-start md:self-auto py-3 px-6 rounded-xl bg-[#1C1D1F] hover:bg-[#2B2C2E] text-white text-xs font-sans font-medium uppercase tracking-wider transition-all shadow-sm active:scale-95"
+              className="inline-flex items-center gap-2 self-start md:self-auto min-h-[44px] py-2.5 px-5 sm:px-6 rounded-xl bg-[#1C1D1F] hover:bg-[#2B2C2E] text-white text-xs font-manrope font-semibold uppercase tracking-wider transition-all shadow-sm active:scale-95"
             >
               <span>View All Packages</span>
               <ArrowUpRight className="w-4 h-4 text-[#EAE3D8]" />
             </Link>
           </div>
 
-          {/* 3 Packages Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          {/* Package Cards Grid (Responsive layout with mobile finger-friendly spacing) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
             {featuredPackages.map((pkg) => {
               const cleanSlug = getCleanPackageSlug(pkg.id);
               return (
@@ -431,26 +189,35 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenEnquiry }) => {
                   className="group rounded-2xl overflow-hidden bg-white border border-[#E5DFD7] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
                 >
                   <div>
-                    <div className="relative h-60 overflow-hidden bg-stone-200">
+                    {/* Package Cover Image */}
+                    <div className="relative h-52 sm:h-56 overflow-hidden bg-stone-200">
                       <img
                         src={optimizeCloudinaryUrl(pkg.coverImage, 640)}
                         alt={pkg.title}
                         loading="lazy"
                         decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        style={{ objectPosition: pkg.objectPosition || 'center' }}
                         referrerPolicy="no-referrer"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/35" />
-                      {/* Editorial Package Metadata: Printed terracotta tag + clean natural duration */}
-                      <PackageCardMetadata badge={pkg.badge || pkg.tripStyle} duration={pkg.duration} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/30 pointer-events-none" />
+
+                      {/* Editorial Package Metadata (Terracotta Badge + Duration) */}
+                      <PackageCardMetadata
+                        badge={pkg.badge || pkg.tripStyle}
+                        duration={pkg.duration}
+                      />
+
+                      {/* Title over image bottom */}
                       <div className="absolute bottom-3 left-4 right-4 text-white">
-                        <h3 className="font-serif text-2xl font-normal leading-snug">
+                        <h3 className="font-serif text-xl sm:text-2xl font-normal leading-snug">
                           {pkg.title}
                         </h3>
                       </div>
                     </div>
 
-                    <div className="p-6 space-y-4">
+                    {/* Content Body */}
+                    <div className="p-5 space-y-4">
                       <p className="text-stone-600 text-xs sm:text-sm leading-relaxed line-clamp-2 font-sans font-light">
                         {pkg.summary}
                       </p>
@@ -460,38 +227,35 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenEnquiry }) => {
                           <Users className="w-3.5 h-3.5 text-[#2E6B68] shrink-0" />
                           <span className="truncate">{pkg.suitableTravellers}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-3.5 h-3.5 text-[#2E6B68] shrink-0" />
-                          <span>{pkg.stayType}</span>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {pkg.includedActivities.slice(0, 3).map((act, i) => (
-                          <span key={i} className="px-2 py-0.5 rounded-md bg-[#FAF7F2] border border-[#E5DFD7] text-stone-600 text-[11px] font-sans">
-                            ✓ {act}
-                          </span>
-                        ))}
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-6 pt-0 border-t border-stone-100 mt-4 flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] font-sans uppercase text-stone-400 block tracking-wider">From</span>
-                      <span className="font-serif text-2xl font-normal text-[#1C1D1F]">
-                        ₹{pkg.pricePerPerson.toLocaleString()}
-                      </span>
-                      <span className="text-[11px] text-stone-500 font-sans"> / person</span>
-                    </div>
+                  {/* Card Footer: Price & CTA */}
+                  <div className="p-5 pt-0 border-t border-[#E5DFD7]/70 mt-auto">
+                    <div className="pt-4 flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-sans uppercase text-stone-400 block tracking-wider font-medium">
+                          From
+                        </span>
+                        <div className="flex items-baseline gap-1">
+                          <span className="font-serif text-xl sm:text-2xl font-normal text-[#1C1D1F]">
+                            ₹{pkg.pricePerPerson.toLocaleString()}
+                          </span>
+                          <span className="text-[11px] text-stone-500 font-sans">
+                            / person
+                          </span>
+                        </div>
+                      </div>
 
-                    <Link
-                      to={`/packages/${cleanSlug}`}
-                      className="px-4 py-2 rounded-xl bg-[#2E6B68] hover:bg-[#235452] text-white text-xs font-sans font-medium uppercase tracking-wider transition-colors flex items-center gap-1.5"
-                    >
-                      <span>View Package</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </Link>
+                      <Link
+                        to={`/packages/${cleanSlug}`}
+                        className="min-h-[44px] py-2.5 px-4 rounded-xl bg-[#2E6B68] hover:bg-[#245754] text-white text-xs font-manrope font-semibold uppercase tracking-wider transition-colors flex items-center gap-1 shadow-sm active:scale-95"
+                      >
+                        <span>View Package</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               );
@@ -500,230 +264,456 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenEnquiry }) => {
         </div>
       </section>
 
-      {/* 4. TRIP PLANS PREVIEW (Chapter IV) */}
-      <section className="py-16 sm:py-24 bg-[#FAF7F2]">
+      {/* =========================================================================
+          3. ACTIVITIES SECTION
+          ========================================================================= */}
+      <section className="py-16 sm:py-24 bg-[#FAF8F5] border-b border-[#E5DFD7]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+          {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
-              <span className="text-xs font-sans uppercase tracking-widest text-[#2E6B68] font-medium flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5" />
-                <span>Tailored Expedition Plans • Chapter IV</span>
+              <span className="text-xs font-manrope uppercase tracking-widest text-[#2E6B68] font-semibold flex items-center gap-2">
+                <Compass className="w-3.5 h-3.5" />
+                <span>Wilderness & Rapids</span>
               </span>
               <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#1C1D1F]">
-                Who are you travelling with?
+                Adventure Awaits
               </h2>
               <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-light">
-                Whether you want quiet solo reflective trails or a synchronized multi-raft derby for a 20-person squad, we craft each plan around your crew.
+                From Class III & IV white water rapids to jungle safaris, discover authentic wilderness experiences.
               </p>
             </div>
+
             <Link
-              to="/trip-plans"
-              className="inline-flex items-center gap-2 self-start md:self-auto py-3 px-6 rounded-xl bg-[#1C1D1F] hover:bg-[#2B2C2E] text-white text-xs font-sans font-medium uppercase tracking-wider transition-all shadow-sm active:scale-95"
+              to="/activities"
+              className="inline-flex items-center gap-2 self-start md:self-auto min-h-[44px] py-2.5 px-5 sm:px-6 rounded-xl bg-[#1C1D1F] hover:bg-[#2B2C2E] text-white text-xs font-manrope font-semibold uppercase tracking-wider transition-all shadow-sm active:scale-95"
             >
-              <span>View Trip Plans</span>
+              <span>Explore All Activities</span>
               <ArrowUpRight className="w-4 h-4 text-[#EAE3D8]" />
             </Link>
           </div>
 
-          {/* 5 Group Options Preview with Authentic Photography */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
-            {[
-              {
-                id: 'solo',
-                label: 'Solo',
-                desc: 'Mindful trails, birding & quiet river decks',
-                image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788988959/cc6364c1-6675-432f-8d98-64c73cb38b99.png',
-                tag: 'Digital Detox',
-              },
-              {
-                id: 'duo',
-                label: 'Duo',
-                desc: 'Riverside cottages & peaceful tandem kayaks',
-                image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788988909/84aece0b-ced0-4594-89d9-afd465f38c98.png',
-                tag: 'Scenic & Romantic',
-              },
-              {
-                id: 'friends',
-                label: 'Friends',
-                desc: 'Rapid descents, campfire nights & group treks',
-                image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788989523/dandeli_rafting_4k.png',
-                tag: 'High Adrenaline',
-              },
-              {
-                id: 'family',
-                label: 'Family',
-                desc: 'Gentle river floats, nature walks & comfort',
-                image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788988775/fbdd8834-14ff-4f93-8f6b-bd85566424e3.png',
-                tag: 'Wildlife & Care',
-              },
-              {
-                id: 'group',
-                label: 'Groups 4+',
-                desc: 'Dedicated guides, team wings & custom schedules',
-                image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788989523/dandeli_cottages_night_4K_faithful.png',
-                tag: 'Campfire & Derby',
-              },
-            ].map((plan) => (
-              <Link
-                key={plan.id}
-                to={`/trip-plans/${plan.id}`}
-                className="group relative rounded-2xl overflow-hidden min-h-[220px] sm:min-h-[260px] bg-stone-900 border border-[#E5DFD7] hover:border-[#2E6B68] transition-all duration-300 flex flex-col justify-end shadow-sm hover:shadow-md"
-              >
-                <img
-                  src={plan.image}
-                  alt={plan.label}
-                  loading="lazy"
-                  decoding="async"
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-[0.88] contrast-[1.02]"
-                  referrerPolicy="no-referrer"
-                />
-                {/* Gentle gradient keeping the scenery natural and legible */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
-
-                <div className="relative z-10 p-4 sm:p-5 text-white flex flex-col justify-between h-full">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-sans uppercase tracking-wider text-[#EAE3D8] font-medium px-2 py-0.5 rounded bg-black/50 backdrop-blur-sm border border-white/15">
-                      {plan.tag}
-                    </span>
-                    <span className="w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white group-hover:bg-[#2E6B68] group-hover:text-white transition-colors">
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
+          {/* Activities Horizontal Swipe Rail on Mobile / 3-Column Grid on Desktop */}
+          <div className="flex sm:grid overflow-x-auto sm:overflow-visible pb-4 sm:pb-0 snap-x snap-mandatory sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0 no-scrollbar">
+            {featuredActivities.map((act) => {
+              const cleanSlug = getCleanActivitySlug(act.id);
+              return (
+                <div
+                  key={act.id}
+                  className="w-[82vw] max-w-[340px] shrink-0 snap-center sm:w-auto sm:max-w-none group rounded-2xl overflow-hidden bg-white border border-[#E5DFD7] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+                >
                   <div>
-                    <span className="text-[10px] text-[#EAE3D8]/80 font-sans uppercase tracking-wider block font-medium">Expedition</span>
-                    <h3 className="font-serif text-2xl font-normal text-white group-hover:text-[#EAE3D8] transition-colors leading-tight mt-0.5">
-                      {plan.label}
-                    </h3>
-                    <p className="text-stone-200 text-xs mt-1.5 line-clamp-2 leading-relaxed font-sans font-light">
-                      {plan.desc}
-                    </p>
+                    {/* Activity Image */}
+                    <div className="relative h-48 sm:h-52 overflow-hidden bg-stone-200">
+                      <img
+                        src={optimizeCloudinaryUrl(act.image, 640)}
+                        alt={act.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        style={{ objectPosition: act.objectPosition || 'center' }}
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
+
+                      {/* Difficulty Badge */}
+                      <span className="absolute top-3 left-3 px-3 py-1 rounded-md bg-black/60 backdrop-blur-md text-[10px] font-manrope uppercase text-[#FAF7F2] font-semibold tracking-wider border border-white/15">
+                        {act.difficulty || act.category}
+                      </span>
+
+                      {/* Duration Tag */}
+                      <span className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-white/90 backdrop-blur-sm text-[11px] font-manrope text-stone-800 font-medium shadow-sm">
+                        {act.duration.split('(')[0].trim()}
+                      </span>
+
+                      <div className="absolute bottom-3 left-4 right-4 text-white">
+                        <h3 className="font-serif text-xl sm:text-2xl font-normal leading-snug">
+                          {act.title}
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Description Body */}
+                    <div className="p-5 space-y-3">
+                      <p className="text-stone-600 text-xs sm:text-sm leading-relaxed line-clamp-2 font-sans font-light">
+                        {act.description}
+                      </p>
+
+                      <div className="flex items-center gap-3 text-xs text-stone-500 font-sans pt-1">
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-[#2E6B68]" />
+                          <span className="truncate">{act.location}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card Action */}
+                  <div className="p-5 pt-0 mt-auto border-t border-[#E5DFD7]/70">
+                    <div className="pt-4 flex items-center justify-between">
+                      <div>
+                        {act.pricePerPerson ? (
+                          <>
+                            <span className="text-[10px] font-sans uppercase text-stone-400 block tracking-wider font-medium">
+                              From
+                            </span>
+                            <span className="font-serif text-lg sm:text-xl font-normal text-[#1C1D1F]">
+                              ₹{act.pricePerPerson.toLocaleString()}
+                              <span className="text-xs text-stone-500 font-sans font-normal"> / person</span>
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-xs text-stone-500 font-sans italic">Season rates</span>
+                        )}
+                      </div>
+
+                      <Link
+                        to={`/activities/${cleanSlug}`}
+                        className="min-h-[44px] py-2 px-4 rounded-xl bg-stone-100 hover:bg-[#2E6B68] text-stone-800 hover:text-white text-xs font-manrope font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
+                      >
+                        <span>Explore</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </Link>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* 5. FEATURED RESORTS PREVIEW (Chapter V) */}
-      <section className="py-16 sm:py-24 bg-[#18191B] text-white">
+      {/* =========================================================================
+          4. WHY CHOOSE US
+          ========================================================================= */}
+      <section className="py-16 sm:py-24 bg-white border-b border-[#E5DFD7]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="text-xs font-manrope uppercase tracking-widest text-[#2E6B68] font-semibold">
+              Rooted in Ganeshgudi
+            </span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#1C1D1F]">
+              Why Travel With Us?
+            </h2>
+            <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-light">
+              Genuine local expertise, safety-first protocols, and transparent planning directly from the Kali riverbank.
+            </p>
+          </div>
+
+          {/* 5 Genuine Benefits Grid (2-column on mobile, 5-column on desktop) */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
+            {/* Benefit 1 */}
+            <div className="p-4 sm:p-6 rounded-2xl bg-[#FAF7F2] border border-[#E5DFD7] space-y-2.5 sm:space-y-3 flex flex-col justify-between">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white border border-[#E5DFD7] flex items-center justify-center text-[#2E6B68] shadow-2xs">
+                <Compass className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.75]" />
+              </div>
+              <div className="space-y-1 sm:space-y-1.5">
+                <h3 className="font-serif text-base sm:text-lg font-normal text-[#1C1D1F]">
+                  Local Dandeli Expertise
+                </h3>
+                <p className="text-[11px] sm:text-xs text-stone-600 leading-relaxed font-sans font-light line-clamp-3 sm:line-clamp-none">
+                  Native river guides and forest trackers born along the Kali River who know every eddy and rapid bend.
+                </p>
+              </div>
+            </div>
+
+            {/* Benefit 2 */}
+            <div className="p-4 sm:p-6 rounded-2xl bg-[#FAF7F2] border border-[#E5DFD7] space-y-2.5 sm:space-y-3 flex flex-col justify-between">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white border border-[#E5DFD7] flex items-center justify-center text-[#2E6B68] shadow-2xs">
+                <Calendar className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.75]" />
+              </div>
+              <div className="space-y-1 sm:space-y-1.5">
+                <h3 className="font-serif text-base sm:text-lg font-normal text-[#1C1D1F]">
+                  Carefully Planned Trips
+                </h3>
+                <p className="text-[11px] sm:text-xs text-stone-600 leading-relaxed font-sans font-light line-clamp-3 sm:line-clamp-none">
+                  Itineraries synchronized with Supa Dam hydro-release hours to guarantee optimal white water levels.
+                </p>
+              </div>
+            </div>
+
+            {/* Benefit 3 */}
+            <div className="p-4 sm:p-6 rounded-2xl bg-[#FAF7F2] border border-[#E5DFD7] space-y-2.5 sm:space-y-3 flex flex-col justify-between">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white border border-[#E5DFD7] flex items-center justify-center text-[#2E6B68] shadow-2xs">
+                <Trees className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.75]" />
+              </div>
+              <div className="space-y-1 sm:space-y-1.5">
+                <h3 className="font-serif text-base sm:text-lg font-normal text-[#1C1D1F]">
+                  Comfortable Stays
+                </h3>
+                <p className="text-[11px] sm:text-xs text-stone-600 leading-relaxed font-sans font-light line-clamp-3 sm:line-clamp-none">
+                  Handpicked riverside eco-resorts, treehouses, and jungle cottages with home-style Karnataka buffet meals.
+                </p>
+              </div>
+            </div>
+
+            {/* Benefit 4 */}
+            <div className="p-4 sm:p-6 rounded-2xl bg-[#FAF7F2] border border-[#E5DFD7] space-y-2.5 sm:space-y-3 flex flex-col justify-between">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white border border-[#E5DFD7] flex items-center justify-center text-[#2E6B68] shadow-2xs">
+                <Award className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.75]" />
+              </div>
+              <div className="space-y-1 sm:space-y-1.5">
+                <h3 className="font-serif text-base sm:text-lg font-normal text-[#1C1D1F]">
+                  Adventure & Nature
+                </h3>
+                <p className="text-[11px] sm:text-xs text-stone-600 leading-relaxed font-sans font-light line-clamp-3 sm:line-clamp-none">
+                  Certified Class III & IV gear, IRF rescue-trained captains, and certified sanctuary naturalists.
+                </p>
+              </div>
+            </div>
+
+            {/* Benefit 5 (Centered span-2 on mobile for symmetry) */}
+            <div className="col-span-2 md:col-span-1 p-4 sm:p-6 rounded-2xl bg-[#FAF7F2] border border-[#E5DFD7] space-y-2.5 sm:space-y-3 flex flex-col justify-between">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white border border-[#E5DFD7] flex items-center justify-center text-[#2E6B68] shadow-2xs">
+                <Headphones className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.75]" />
+              </div>
+              <div className="space-y-1 sm:space-y-1.5">
+                <h3 className="font-serif text-base sm:text-lg font-normal text-[#1C1D1F]">
+                  Personalised Support
+                </h3>
+                <p className="text-[11px] sm:text-xs text-stone-600 leading-relaxed font-sans font-light line-clamp-3 sm:line-clamp-none">
+                  Direct local desk support via phone and WhatsApp from your first enquiry until you return home safely.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          5. ROOMS / RESORT STAYS
+          ========================================================================= */}
+      <section className="py-16 sm:py-24 bg-[#18191B] text-white border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+          {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
-              <span className="text-xs font-sans uppercase tracking-widest text-[#EAE3D8] font-medium flex items-center gap-1.5">
-                <TreePine className="w-3.5 h-3.5" />
-                <span>Eco Lodges & Forest Stays • Chapter V</span>
+              <span className="text-xs font-manrope uppercase tracking-widest text-[#EAE3D8] font-semibold flex items-center gap-2">
+                <Bed className="w-3.5 h-3.5 text-[#EAE3D8]" />
+                <span>Wilderness Accommodations</span>
               </span>
               <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-white">
-                Featured Resorts & Stays
+                Stay Close to Nature
               </h2>
               <p className="text-stone-300 text-sm sm:text-base leading-relaxed font-sans font-light">
-                Reclaim your sleep. Stay in granite river cottages, elevated timber treehouses, or spice plantation homestays free of city sounds.
+                Wake up to river mist and hornbill calls. Handpicked riverside cottages, luxury tents, and nature lodges.
               </p>
             </div>
+
             <Link
               to="/resorts"
-              className="inline-flex items-center gap-2 self-start md:self-auto py-3 px-6 rounded-xl bg-[#2E6B68] hover:bg-[#235452] text-white text-xs font-sans font-medium uppercase tracking-wider transition-all shadow-md active:scale-95"
+              className="inline-flex items-center gap-2 self-start md:self-auto min-h-[44px] py-2.5 px-5 sm:px-6 rounded-xl bg-[#2E6B68] hover:bg-[#245754] text-white text-xs font-manrope font-semibold uppercase tracking-wider transition-all shadow-sm active:scale-95"
             >
-              <span>Explore Resorts</span>
+              <span>Explore All Resorts</span>
               <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
 
-          {/* 3 Resorts Grid */}
+          {/* 3 Featured Resorts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {featuredResorts.map((resort) => (
-              <Link
+              <div
                 key={resort.id}
-                to={`/resorts/${resort.id}`}
                 className="group rounded-2xl overflow-hidden bg-[#242629] border border-white/10 hover:border-[#2E6B68]/60 transition-all duration-300 flex flex-col justify-between shadow-md"
               >
-                <div className="relative h-60 overflow-hidden bg-stone-900">
-                  <img
-                    src={optimizeCloudinaryUrl(resort.coverImage, 640)}
-                    alt={resort.name}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#242629] via-transparent to-transparent" />
-                  <span className="absolute top-3 left-3 px-3 py-1 rounded-md bg-black/60 backdrop-blur-md text-[10px] font-sans uppercase text-[#FAF7F2] font-medium border border-white/15">
-                    {resort.categoryLabel}
-                  </span>
-                  <div className="absolute bottom-3 left-4 right-4">
-                    <span className="text-[11px] font-sans text-stone-300 block">{resort.locationArea}</span>
-                    <h3 className="font-serif text-2xl font-normal text-white leading-snug">
-                      {resort.name}
-                    </h3>
+                <div>
+                  {/* Image Container */}
+                  <div className="relative h-60 overflow-hidden bg-stone-900">
+                    <img
+                      src={optimizeCloudinaryUrl(resort.coverImage, 640)}
+                      alt={resort.name}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      style={{ objectPosition: resort.objectPosition || 'center' }}
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#242629] via-transparent to-black/30 pointer-events-none" />
+
+                    <span className="absolute top-3 left-3 px-3 py-1 rounded-md bg-black/65 backdrop-blur-md text-[10px] font-manrope uppercase text-[#FAF7F2] font-semibold border border-white/15">
+                      {resort.categoryLabel}
+                    </span>
+
+                    <div className="absolute bottom-3 left-4 right-4">
+                      <span className="text-[11px] font-sans text-stone-300 block">
+                        {resort.locationArea}
+                      </span>
+                      <h3 className="font-serif text-2xl font-normal text-white leading-snug">
+                        {resort.name}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Body Details */}
+                  <div className="p-6 space-y-4">
+                    <p className="text-stone-300 text-xs sm:text-sm leading-relaxed line-clamp-2 font-sans font-light">
+                      {resort.tagline}
+                    </p>
+
+                    {/* Relevant Amenities */}
+                    <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-stone-400 font-sans">
+                      <span className="inline-flex items-center gap-1 bg-white/5 px-2 py-1 rounded-md">
+                        <Utensils className="w-3 h-3 text-[#EAE3D8]" />
+                        <span>Buffet Meals</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 bg-white/5 px-2 py-1 rounded-md">
+                        <Flame className="w-3 h-3 text-[#EAE3D8]" />
+                        <span>Campfire</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 bg-white/5 px-2 py-1 rounded-md">
+                        <ShieldCheck className="w-3 h-3 text-[#2E6B68]" />
+                        <span>River Access</span>
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
-                  <p className="text-stone-300 text-xs sm:text-sm leading-relaxed line-clamp-2 font-sans">
-                    {resort.tagline}
-                  </p>
-
-                  <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                {/* Footer Tariff & CTA */}
+                <div className="p-6 pt-0 border-t border-white/10 mt-auto">
+                  <div className="pt-4 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] font-sans uppercase text-stone-400 block tracking-wider">Tariff from</span>
+                      <span className="text-[10px] font-sans uppercase text-stone-400 block tracking-wider font-medium">
+                        Tariff from
+                      </span>
                       <span className="font-serif text-2xl font-normal text-[#EAE3D8]">
                         ₹{resort.pricePerNight.toLocaleString()}
                       </span>
                       <span className="text-[11px] text-stone-400 font-sans"> / person</span>
                     </div>
 
-                    <span className="px-4 py-2 rounded-xl bg-white/10 group-hover:bg-white/20 text-white text-xs font-sans font-medium uppercase tracking-wider transition-colors flex items-center gap-1">
+                    <Link
+                      to={`/resorts/${resort.id}`}
+                      className="min-h-[44px] py-2.5 px-4 rounded-xl bg-white/10 hover:bg-[#2E6B68] text-white text-xs font-manrope font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5 active:scale-95"
+                    >
                       <span>View Stay</span>
                       <ChevronRight className="w-3.5 h-3.5" />
-                    </span>
+                    </Link>
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 5B. CUSTOMER PHOTOGRAPHY ARCHIVE SHOWCASE */}
+      {/* =========================================================================
+          6. REVIEWS / FEEDBACK
+          ========================================================================= */}
       <section className="py-16 sm:py-24 bg-[#FAF7F2] border-b border-[#E5DFD7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
-              <span className="text-xs font-sans uppercase tracking-widest text-[#2E6B68] font-medium flex items-center gap-1.5">
-                <Camera className="w-3.5 h-3.5" />
-                <span>Traveler Perspectives • 48 Authentic Captures</span>
+              <span className="text-xs font-manrope uppercase tracking-widest text-[#2E6B68] font-semibold flex items-center gap-2">
+                <Star className="w-3.5 h-3.5 fill-[#2E6B68] text-[#2E6B68]" />
+                <span>Guest Experiences</span>
               </span>
               <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#1C1D1F]">
-                Dandeli Through Real Eyes
+                What Travellers Say
               </h2>
               <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-light">
-                No generic stock photos. See genuine white-water drops, river ziplines, teak forest cottages, and night bonfires captured right here in Ganeshgudi and Anshi.
+                Genuine stories from families, friends, and solo adventurers who explored Dandeli with us.
               </p>
             </div>
+
+            <button
+              type="button"
+              onClick={() => onOpenEnquiry('Guest Review Enquiry')}
+              className="inline-flex items-center gap-2 self-start md:self-auto min-h-[44px] py-2.5 px-5 sm:px-6 rounded-xl bg-[#FAF7F2] hover:bg-white border border-[#E5DFD7] text-[#1C1D1F] text-xs font-manrope font-semibold uppercase tracking-wider transition-all shadow-2xs active:scale-95 cursor-pointer"
+            >
+              <span>Share Your Experience</span>
+              <ArrowUpRight className="w-4 h-4 text-[#2E6B68]" />
+            </button>
+          </div>
+
+          {/* Genuine Reviews Horizontal Carousel on Mobile / 3-Column Grid on Desktop */}
+          <div className="flex md:grid overflow-x-auto md:overflow-visible pb-4 md:pb-0 snap-x snap-mandatory md:grid-cols-3 gap-4 sm:gap-8 -mx-4 px-4 sm:mx-0 sm:px-0 no-scrollbar">
+            {TESTIMONIALS.map((t) => (
+              <div
+                key={t.id}
+                className="w-[85vw] max-w-[360px] shrink-0 snap-center md:w-auto md:max-w-none p-5 sm:p-8 rounded-2xl bg-white border border-[#E5DFD7] shadow-sm flex flex-col justify-between space-y-5 sm:space-y-6"
+              >
+                <div className="space-y-4">
+                  {/* Clean Star Treatment */}
+                  <div className="flex items-center gap-1 text-amber-500">
+                    {[...Array(t.rating || 5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className="w-4 h-4 fill-amber-500 text-amber-500"
+                      />
+                    ))}
+                  </div>
+
+                  {/* Review Text */}
+                  <p className="text-stone-700 text-xs sm:text-sm leading-relaxed font-sans italic font-normal">
+                    “{t.text}”
+                  </p>
+                </div>
+
+                {/* Reviewer Metadata */}
+                <div className="pt-4 border-t border-[#E5DFD7] flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-stone-200 shrink-0 border border-[#E5DFD7]">
+                    <img
+                      src={t.avatar}
+                      alt={t.guestName}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="font-serif text-sm font-normal text-[#1C1D1F] truncate">
+                      {t.guestName}
+                    </h4>
+                    <p className="text-[11px] text-stone-500 font-sans truncate">
+                      {t.hometown} • {t.experience}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          7. GALLERY
+          ========================================================================= */}
+      <section className="py-16 sm:py-24 bg-white border-b border-[#E5DFD7]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <span className="text-xs font-manrope uppercase tracking-widest text-[#2E6B68] font-semibold flex items-center gap-2">
+                <Camera className="w-3.5 h-3.5" />
+                <span>Authentic Captures</span>
+              </span>
+              <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#1C1D1F]">
+                Moments From Dandeli
+              </h2>
+              <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-light">
+                Real snapshots of white water rapids, deep forest canopies, wildlife sightings, and tranquil evenings.
+              </p>
+            </div>
+
             <Link
               to="/gallery"
-              className="inline-flex items-center gap-2 self-start md:self-auto py-3 px-6 rounded-xl bg-[#1C1D1F] hover:bg-[#2B2C2E] text-white text-xs font-sans font-medium uppercase tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer"
+              className="inline-flex items-center gap-2 self-start md:self-auto min-h-[44px] py-2.5 px-5 sm:px-6 rounded-xl bg-[#1C1D1F] hover:bg-[#2B2C2E] text-white text-xs font-manrope font-semibold uppercase tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer"
             >
-              <span>Explore All 48 Photos</span>
+              <span>View Full Gallery</span>
               <ArrowUpRight className="w-4 h-4 text-[#EAE3D8]" />
             </Link>
           </div>
 
-          {/* Curated 6-Photo Mosaic */}
+          {/* Curated Editorial Mosaic */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-            {[
-              DANDELI_IMAGES[15], // Rafting rapids
-              DANDELI_IMAGES[33], // Tiger sighting
-              DANDELI_IMAGES[9],  // Riverside pool deck
-              DANDELI_IMAGES[4],  // A-frame cottage night
-              DANDELI_IMAGES[27], // Zipline river crossing
-              DANDELI_IMAGES[23], // Tandem kayaking
-            ].filter(Boolean).map((img) => (
-              <Link
+            {curatedGallery.map((img, idx) => (
+              <button
                 key={img.id}
-                to="/gallery"
-                className="group relative rounded-2xl overflow-hidden aspect-3/4 bg-stone-200 border border-[#E5DFD7] shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-end"
+                type="button"
+                onClick={() => setLightboxIndex(idx)}
+                className="group relative rounded-2xl overflow-hidden aspect-[3/4] bg-stone-200 border border-[#E5DFD7] shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-end text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#2E6B68]"
               >
                 <img
                   src={getThumbUrl(img, 480)}
@@ -732,128 +722,445 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenEnquiry }) => {
                   decoding="async"
                   referrerPolicy="no-referrer"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  style={{ objectPosition: img.objectPosition || 'center' }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="relative p-3 text-white space-y-0.5">
-                  <span className="text-[9px] font-sans uppercase tracking-widest text-[#EAE3D8] font-medium block">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                <div className="relative p-3 text-white space-y-0.5 pointer-events-none">
+                  <span className="text-[9px] font-manrope uppercase tracking-widest text-[#EAE3D8] font-semibold block">
                     {img.category}
                   </span>
                   <h4 className="font-serif text-xs font-normal leading-snug line-clamp-1">
                     {img.title}
                   </h4>
                 </div>
-              </Link>
+              </button>
             ))}
           </div>
 
-          <div className="p-4 rounded-xl bg-white border border-[#E5DFD7] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-sans text-stone-600">
-            <span className="text-center sm:text-left">
-              Browse by category in our dedicated gallery: White Water Rafting, Luxury Resorts, Forest Treks, Ziplines & Elephant Safaris.
-            </span>
-            <Link
-              to="/gallery"
-              className="text-[#2E6B68] font-medium hover:underline flex items-center gap-1 shrink-0"
+          {/* Lightbox Modal */}
+          {lightboxIndex !== null && curatedGallery[lightboxIndex] && (
+            <div
+              className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6 select-none"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
             >
-              <span>Open Customer Gallery</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </section>
+              {/* Lightbox Header Bar */}
+              <div className="flex items-center justify-between text-white z-10">
+                <div className="space-y-0.5">
+                  <span className="text-[10px] font-manrope uppercase tracking-widest text-[#EAE3D8] font-semibold">
+                    {curatedGallery[lightboxIndex].category} • {lightboxIndex + 1} / {curatedGallery.length}
+                  </span>
+                  <h4 className="font-serif text-sm sm:text-base font-normal text-stone-200">
+                    {curatedGallery[lightboxIndex].title}
+                  </h4>
+                </div>
 
-      {/* 6. ABOUT US PREVIEW (Chapter VI) */}
-      <section className="py-16 sm:py-24 bg-[#FAF7F2]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-8 sm:p-12 rounded-2xl bg-[#F4EFEA] border border-[#E5DFD7] grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-7 space-y-4">
-              <span className="text-xs font-sans uppercase tracking-widest text-[#2E6B68] font-medium flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Native Dandeli Guide Network • Chapter VI</span>
-              </span>
-              <h2 className="font-serif text-3xl sm:text-5xl font-normal text-[#1C1D1F] tracking-tight leading-tight">
-                Who we are & why we do this
-              </h2>
-              <p className="text-stone-700 text-sm sm:text-base leading-relaxed font-sans font-light">
-                Dandeli Wilds is not an automated corporate aggregator. We are a family of native Kali River captains, Anshi forest department trackers, and Ganeshgudi homestay owners born along these waters.
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2 text-xs font-medium text-stone-800 font-sans">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-[#2E6B68] shrink-0" />
-                  <span>IRF Certified Marshals</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#2E6B68] shrink-0" />
-                  <span>100% Zero Middlemen</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Heart className="w-4 h-4 text-[#C46849] shrink-0" />
-                  <span>Community Native Roots</span>
+                  <Link
+                    to="/gallery"
+                    className="min-h-[44px] px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-manrope font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5"
+                    onClick={() => setLightboxIndex(null)}
+                  >
+                    <span>View All</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <button
+                    type="button"
+                    aria-label="Close Lightbox"
+                    onClick={() => setLightboxIndex(null)}
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
-              <div className="pt-4">
-                <Link
-                  to="/about"
-                  className="inline-flex items-center gap-2 py-3 px-6 rounded-xl bg-[#1C1D1F] hover:bg-[#2B2C2E] text-white text-xs font-sans font-medium uppercase tracking-wider transition-all shadow-sm active:scale-95"
-                >
-                  <span>About Us & Safety Protocols</span>
-                  <ArrowUpRight className="w-4 h-4 text-[#EAE3D8]" />
-                </Link>
-              </div>
-            </div>
 
-            <div className="lg:col-span-5 relative">
-              <div className="rounded-2xl overflow-hidden shadow-md border border-[#E5DFD7] bg-stone-200">
+              {/* Lightbox Main Image Area */}
+              <div className="relative flex-1 flex items-center justify-center py-4 my-auto overflow-hidden">
                 <img
-                  src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788988909/84aece0b-ced0-4594-89d9-afd465f38c98.png"
-                  alt="Dandeli river guide paddling on the Kali River"
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-72 sm:h-80 object-cover"
+                  src={getHighResUrl(curatedGallery[lightboxIndex])}
+                  alt={curatedGallery[lightboxIndex].alt}
+                  className="max-h-[75vh] max-w-full w-auto object-contain rounded-xl shadow-2xl transition-opacity duration-300"
                   referrerPolicy="no-referrer"
                 />
+
+                {/* Mobile & Desktop Nav Arrows */}
+                <button
+                  type="button"
+                  aria-label="Previous Image"
+                  onClick={handlePrevLightbox}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-black/50 hover:bg-black/80 text-white border border-white/20 flex items-center justify-center transition-all cursor-pointer backdrop-blur-sm active:scale-95"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next Image"
+                  onClick={handleNextLightbox}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-black/50 hover:bg-black/80 text-white border border-white/20 flex items-center justify-center transition-all cursor-pointer backdrop-blur-sm active:scale-95"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
               </div>
-              <div className="absolute -bottom-4 -left-4 p-4 rounded-xl bg-white border border-[#E5DFD7] shadow-lg text-xs max-w-[240px]">
-                <p className="italic text-stone-700 font-serif">“The river doesn’t run on a schedule, but with native eyes, you know every eddy.”</p>
-                <p className="font-sans font-medium text-[#1C1D1F] mt-1.5">— Ganeshgudi River Desk</p>
+
+              {/* Lightbox Footer Bar */}
+              <div className="text-center text-[11px] text-stone-400 font-sans">
+                <span>Swipe left / right on mobile • Tap outside or X to close</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* =========================================================================
+          8. CONTACT US
+          ========================================================================= */}
+      <section className="py-16 sm:py-24 bg-[#FAF7F2] border-b border-[#E5DFD7]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="text-xs font-manrope uppercase tracking-widest text-[#2E6B68] font-semibold">
+              Get in Touch
+            </span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#1C1D1F]">
+              Ready to Experience Dandeli?
+            </h2>
+            <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-light">
+              Tell us your preferred dates and squad size. Our local river captain will check dam water releases and send a tailored plan.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 items-start">
+            {/* Direct Contact Cards (Left column on desktop) */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="rounded-2xl bg-[#1C1D1F] text-white p-6 sm:p-8 space-y-6 border border-white/10 shadow-md">
+                <div className="space-y-1 border-b border-white/10 pb-4">
+                  <span className="text-[10px] font-manrope uppercase text-[#EAE3D8] tracking-widest font-semibold">
+                    Direct Expeditions Desk
+                  </span>
+                  <h3 className="font-serif text-2xl font-normal text-white">
+                    Ganeshgudi River Desk
+                  </h3>
+                </div>
+
+                <div className="space-y-4 text-xs font-sans text-stone-300">
+                  {/* Phone */}
+                  <div className="flex items-start gap-3">
+                    <Phone className="w-4 h-4 text-[#EAE3D8] shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-stone-400 block text-[10px]">Hotline / Calling Desk</span>
+                      <a
+                        href="tel:+919481245890"
+                        className="hover:text-white font-medium text-sm text-[#FAF7F2] font-mono"
+                      >
+                        +91 94812 45890
+                      </a>
+                      <p className="text-[10px] text-stone-400">7:00 AM – 9:30 PM IST</p>
+                    </div>
+                  </div>
+
+                  {/* WhatsApp */}
+                  <div className="flex items-start gap-3">
+                    <Phone className="w-4 h-4 text-[#2E6B68] shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-stone-400 block text-[10px]">Direct WhatsApp</span>
+                      <a
+                        href="https://wa.me/919481245890?text=Hello%20Dandeli%20Wilds%2C%20I%20would%20like%20to%20plan%20a%20trip"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="hover:text-white font-medium text-sm text-[#FAF7F2] font-mono"
+                      >
+                        +91 94812 45890
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div className="flex items-start gap-3">
+                    <Mail className="w-4 h-4 text-[#EAE3D8] shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-stone-400 block text-[10px]">Email Enquiries</span>
+                      <a
+                        href="mailto:expeditions@dandeliwilds.in"
+                        className="hover:text-white font-medium"
+                      >
+                        expeditions@dandeliwilds.in
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-4 h-4 text-[#EAE3D8] shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-stone-400 block text-[10px]">Physical Station</span>
+                      <p className="leading-relaxed">
+                        Kali Riverbank Road, Ganeshgudi, Dandeli, Karnataka 581325
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <a
+                  href="https://wa.me/919481245890?text=Hello%20Dandeli%20Wilds%2C%20I%20would%20like%20to%20plan%20a%20trip"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full min-h-[48px] py-3.5 px-6 rounded-xl bg-[#2E6B68] hover:bg-[#245754] text-white font-manrope font-semibold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95 cursor-pointer"
+                >
+                  <span>Chat on WhatsApp</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Simple Enquiry Form (Right column on desktop) */}
+            <div className="lg:col-span-7">
+              {formSubmitted ? (
+                <div className="p-8 sm:p-10 rounded-2xl bg-white border border-[#2E6B68]/30 shadow-md space-y-5 text-center">
+                  <div className="w-14 h-14 rounded-full bg-[#FAF7F2] text-[#2E6B68] border border-[#2E6B68]/20 flex items-center justify-center mx-auto">
+                    <CheckCircle2 className="w-7 h-7" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-serif text-2xl font-normal text-[#1C1D1F]">
+                      Your enquiry has been received
+                    </h3>
+                    <p className="text-stone-600 text-sm font-sans max-w-md mx-auto">
+                      Thank you, <strong>{contactForm.name}</strong>. Our local river captain will review water release timings and contact you shortly.
+                    </p>
+                  </div>
+                  <a
+                    href={`https://wa.me/919481245890?text=Hi%20Dandeli%20Wilds%2C%20I%20am%20${encodeURIComponent(contactForm.name)}%2C%20travelling%20on%20${encodeURIComponent(contactForm.travelDate || 'soon')}%20for%20${encodeURIComponent(contactForm.travellerCount)}.`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 min-h-[44px] py-2.5 px-6 rounded-xl bg-[#2E6B68] hover:bg-[#245754] text-white font-manrope font-semibold text-xs uppercase tracking-wider transition-colors"
+                  >
+                    <span>Message on WhatsApp Now</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleContactSubmit}
+                  className="p-6 sm:p-8 rounded-2xl bg-white border border-[#E5DFD7] shadow-sm space-y-4"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Name */}
+                    <div className="space-y-1.5 font-sans">
+                      <label htmlFor="home-contact-name" className="text-xs font-semibold uppercase text-stone-700 block tracking-wider">
+                        Full Name *
+                      </label>
+                      <input
+                        id="home-contact-name"
+                        type="text"
+                        placeholder="e.g. Rahul Sharma"
+                        value={contactForm.name}
+                        onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                        className="w-full min-h-[48px] p-3 rounded-xl border border-[#E5DFD7] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] bg-stone-50/50"
+                      />
+                      {formErrors.name && (
+                        <p className="text-red-600 text-xs">{formErrors.name}</p>
+                      )}
+                    </div>
+
+                    {/* Phone */}
+                    <div className="space-y-1.5 font-sans">
+                      <label htmlFor="home-contact-phone" className="text-xs font-semibold uppercase text-stone-700 block tracking-wider">
+                        Phone Number *
+                      </label>
+                      <input
+                        id="home-contact-phone"
+                        type="tel"
+                        placeholder="e.g. 9876543210"
+                        value={contactForm.phone}
+                        onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                        className="w-full min-h-[48px] p-3 rounded-xl border border-[#E5DFD7] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] bg-stone-50/50 font-mono"
+                      />
+                      {formErrors.phone && (
+                        <p className="text-red-600 text-xs">{formErrors.phone}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Email */}
+                    <div className="space-y-1.5 font-sans">
+                      <label htmlFor="home-contact-email" className="text-xs font-semibold uppercase text-stone-700 block tracking-wider">
+                        Email Address (Optional)
+                      </label>
+                      <input
+                        id="home-contact-email"
+                        type="email"
+                        placeholder="e.g. rahul@example.com"
+                        value={contactForm.email}
+                        onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                        className="w-full min-h-[48px] p-3 rounded-xl border border-[#E5DFD7] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] bg-stone-50/50"
+                      />
+                    </div>
+
+                    {/* Preferred Date */}
+                    <div className="space-y-1.5 font-sans">
+                      <label htmlFor="home-contact-date" className="text-xs font-semibold uppercase text-stone-700 block tracking-wider">
+                        Preferred Date
+                      </label>
+                      <input
+                        id="home-contact-date"
+                        type="date"
+                        value={contactForm.travelDate}
+                        onChange={(e) => setContactForm({ ...contactForm, travelDate: e.target.value })}
+                        className="w-full min-h-[48px] p-3 rounded-xl border border-[#E5DFD7] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] bg-stone-50/50"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Travellers Count */}
+                  <div className="space-y-1.5 font-sans">
+                    <label htmlFor="home-contact-travellers" className="text-xs font-semibold uppercase text-stone-700 block tracking-wider">
+                      Number of Travellers
+                    </label>
+                    <select
+                      id="home-contact-travellers"
+                      value={contactForm.travellerCount}
+                      onChange={(e) => setContactForm({ ...contactForm, travellerCount: e.target.value })}
+                      className="w-full min-h-[48px] p-3 rounded-xl border border-[#E5DFD7] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] bg-stone-50/50"
+                    >
+                      <option value="1 Person (Solo)">1 Person (Solo)</option>
+                      <option value="2 Persons (Couple / Duo)">2 Persons (Couple / Duo)</option>
+                      <option value="3 – 5 Persons (Small Group / Family)">3 – 5 Persons (Small Group / Family)</option>
+                      <option value="6 – 10 Persons (Friends Gang)">6 – 10 Persons (Friends Gang)</option>
+                      <option value="11+ Persons (Large Squad / Corporate)">11+ Persons (Large Squad / Corporate)</option>
+                    </select>
+                  </div>
+
+                  {/* Message */}
+                  <div className="space-y-1.5 font-sans">
+                    <label htmlFor="home-contact-msg" className="text-xs font-semibold uppercase text-stone-700 block tracking-wider">
+                      Special Requests / Notes (Optional)
+                    </label>
+                    <textarea
+                      id="home-contact-msg"
+                      rows={3}
+                      placeholder="e.g. Vegetarian food preferences, treehouse interest, white water rafting questions..."
+                      value={contactForm.message}
+                      onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                      className="w-full p-3 rounded-xl border border-[#E5DFD7] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] bg-stone-50/50"
+                    />
+                  </div>
+
+                  {/* Submit CTA */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full min-h-[48px] py-3.5 px-6 rounded-xl bg-[#2E6B68] hover:bg-[#245754] text-white font-manrope font-semibold text-xs uppercase tracking-wider transition-all shadow-sm active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    {isSubmitting ? (
+                      <span>Sending Enquiry...</span>
+                    ) : (
+                      <>
+                        <span>Send Enquiry</span>
+                        <Send className="w-4 h-4 text-[#EAE3D8]" />
+                      </>
+                    )}
+                  </button>
+
+                  <p className="text-center text-[11px] text-stone-500 font-sans">
+                    ✓ Direct local guides • No booking fee for enquiries • Quick WhatsApp response
+                  </p>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          9. MAP SECTION
+          ========================================================================= */}
+      <section className="py-16 sm:py-24 bg-white border-b border-[#E5DFD7]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <span className="text-xs font-manrope uppercase tracking-widest text-[#2E6B68] font-semibold flex items-center gap-2">
+                <MapPin className="w-3.5 h-3.5" />
+                <span>Geographic Location</span>
+              </span>
+              <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#1C1D1F]">
+                Find Us in Dandeli
+              </h2>
+              <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-light">
+                Located in Ganeshgudi & Dandeli, along the banks of the Kali River in Uttara Kannada, Karnataka.
+              </p>
+            </div>
+
+            <a
+              href="https://maps.google.com/?q=Dandeli,+Karnataka"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 self-start md:self-auto min-h-[44px] py-2.5 px-5 sm:px-6 rounded-xl bg-[#1C1D1F] hover:bg-[#2B2C2E] text-white text-xs font-manrope font-semibold uppercase tracking-wider transition-all shadow-sm active:scale-95"
+            >
+              <span>Open in Google Maps</span>
+              <ExternalLink className="w-4 h-4 text-[#EAE3D8]" />
+            </a>
+          </div>
+
+          {/* Interactive Map Block */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            {/* Embedded Responsive Google Map (100% width, no horizontal overflow) */}
+            <div className="lg:col-span-8 rounded-2xl overflow-hidden border border-[#E5DFD7] shadow-sm bg-stone-100 min-h-[300px] sm:min-h-[380px] relative">
+              <iframe
+                title="Dandeli Wilds Geographic Map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d61596.79093867086!2d74.5772391!3d15.2443425!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bb8b56f8f553a15%3A0x7d6a455a7ad5b119!2sDandeli%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                className="w-full h-full min-h-[300px] sm:min-h-[380px] border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+
+            {/* Travel Distances & Connectivity Card */}
+            <div className="lg:col-span-4 p-6 sm:p-8 rounded-2xl bg-[#FAF7F2] border border-[#E5DFD7] space-y-6 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-manrope uppercase text-[#2E6B68] font-semibold tracking-wider">
+                    Getting Here
+                  </span>
+                  <h3 className="font-serif text-2xl font-normal text-[#1C1D1F]">
+                    Connectivity Hubs
+                  </h3>
+                </div>
+
+                <div className="space-y-3 text-xs font-sans text-stone-700">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#E5DFD7]">
+                    <span className="font-medium text-[#1C1D1F]">Hubli (Airport / Railway)</span>
+                    <span className="text-stone-500">72 km • 2.2 hrs</span>
+                  </div>
+                  <div className="flex items-center justify-between pb-2 border-b border-[#E5DFD7]">
+                    <span className="font-medium text-[#1C1D1F]">Belgaum (Airport / Train)</span>
+                    <span className="text-stone-500">88 km • 2.5 hrs</span>
+                  </div>
+                  <div className="flex items-center justify-between pb-2 border-b border-[#E5DFD7]">
+                    <span className="font-medium text-[#1C1D1F]">Goa (Dabolim / MOPA)</span>
+                    <span className="text-stone-500">125 km • 3.0 hrs</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-[#1C1D1F]">Bengaluru</span>
+                    <span className="text-stone-500">460 km • Overnight</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-[#E5DFD7] space-y-2 text-[11px] text-stone-600 font-sans">
+                <p>
+                  📍 <strong>Base Station:</strong> Kali Riverbank Road, Ganeshgudi, Dandeli, Karnataka 581325
+                </p>
+                <p className="text-stone-500">
+                  Pickups from Alnavar, Londa, and Hubli railway stations can be arranged upon request.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 7. FINAL CALL TO ACTION (Chapter VII) */}
-      <section className="py-16 sm:py-20 bg-[#18191B] text-white border-t border-white/10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <span className="text-xs font-sans uppercase tracking-widest text-[#EAE3D8] font-medium flex items-center justify-center gap-1.5">
-            <Compass className="w-3.5 h-3.5" />
-            <span>Plan Your Dandeli Expedition • Chapter VII</span>
-          </span>
-          <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-white leading-tight">
-            Ready to experience the wild Kali?
-          </h2>
-          <p className="text-stone-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-sans">
-            Tell us your travel dates, preferred squad size, and what excites you most. We will check dam water releases, cottage availability, and suggest an authentic itinerary.
-          </p>
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
-            <Link
-              to="/contact"
-              className="w-full sm:w-auto py-3.5 px-8 rounded-xl bg-[#2E6B68] hover:bg-[#235452] text-white font-sans font-medium text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <span>Plan Your Trip</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
-            <a
-              href="https://wa.me/919481245890?text=Hello%20Dandeli%20Wilds%2C%20I%20am%20planning%20a%20trip"
-              target="_blank"
-              rel="noreferrer"
-              className="w-full sm:w-auto py-3.5 px-7 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-sans font-medium text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
-            >
-              <Phone className="w-4 h-4 text-[#EAE3D8]" />
-              <span>Direct WhatsApp Desk</span>
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* Note: Section 10 (FOOTER) is persistently rendered directly below this page in App.tsx! */}
     </div>
   );
 };

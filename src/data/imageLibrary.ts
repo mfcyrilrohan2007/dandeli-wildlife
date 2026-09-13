@@ -1127,3 +1127,163 @@ export const CURATED_WATERFALLS = DANDELI_IMAGES.find(i => i.publicId.includes("
 export const CURATED_WATER_ZORBING = DANDELI_IMAGES.find(i => i.publicId.includes("84d548e8"))!;
 export const CURATED_SAFARI_TENT = DANDELI_IMAGES.find(i => i.publicId === "dandeli_dorm_room_4K_faithful")!;
 export const CURATED_SUPA_DAM = DANDELI_IMAGES.find(i => i.publicId.includes("e029f6e9"))!;
+
+export interface PhotographedAsset {
+  id: string;
+  src: string;
+  alt: string;
+  title: string;
+  category: string;
+  objectPosition: string;
+  desktopPosition: string;
+  mobilePosition: string;
+  aspectRatio: 'landscape' | 'portrait' | 'square';
+}
+
+const buildAsset = (
+  image: DandeliImage,
+  desktopPos = 'center',
+  mobilePos = 'center'
+): PhotographedAsset => ({
+  id: image.id,
+  src: getCloudinaryUrl(image.publicId, image.version, image.format, { width: 1200 }),
+  alt: image.alt,
+  title: image.title,
+  category: image.category,
+  objectPosition: image.objectPosition || desktopPos,
+  desktopPosition: desktopPos,
+  mobilePosition: mobilePos,
+  aspectRatio: image.aspectRatio,
+});
+
+const raftingHeroImg = DANDELI_IMAGES.find(i => i.publicId === "dandeli_rafting_4k") || DANDELI_IMAGES[0];
+const raftingActionImg = DANDELI_IMAGES.find(i => i.publicId.includes("7c6871cf")) || raftingHeroImg;
+const raftingGroupImg = DANDELI_IMAGES.find(i => i.publicId.includes("74737e30")) || raftingHeroImg;
+const raftingFleetImg = DANDELI_IMAGES.find(i => i.publicId.includes("4d4b9277")) || raftingHeroImg;
+const tigerImg = DANDELI_IMAGES.find(i => i.publicId === "dandeli_tiger_4K") || DANDELI_IMAGES[1];
+const elephantImg = DANDELI_IMAGES.find(i => i.publicId.includes("fbdd8834")) || DANDELI_IMAGES[2];
+const kayakImg = DANDELI_IMAGES.find(i => i.publicId.includes("84aece0b")) || DANDELI_IMAGES[3];
+const kayakSunsetImg = DANDELI_IMAGES.find(i => i.publicId.includes("ChatGPT_Image")) || kayakImg;
+const ziplineImg = DANDELI_IMAGES.find(i => i.publicId.includes("67a8c8ac")) || DANDELI_IMAGES[4];
+const coracleImg = DANDELI_IMAGES.find(i => i.publicId.includes("134030b2")) || kayakImg;
+const waterfallImg = DANDELI_IMAGES.find(i => i.publicId.includes("ff97df5f")) || DANDELI_IMAGES[5];
+const aerialRiverImg = DANDELI_IMAGES.find(i => i.publicId.includes("cc6364c1")) || DANDELI_IMAGES[6];
+const rapidsAerialImg = DANDELI_IMAGES.find(i => i.publicId.includes("14fb0c52")) || aerialRiverImg;
+const poolDeckImg = DANDELI_IMAGES.find(i => i.publicId === "dandeli_pool_deck_4K_faithful") || DANDELI_IMAGES[7];
+const nightCottagesImg = DANDELI_IMAGES.find(i => i.publicId === "dandeli_cottages_night_4K_faithful") || DANDELI_IMAGES[8];
+const resortCabinsImg = DANDELI_IMAGES.find(i => i.publicId === "dandeli_resort_cabins_4K_faithful") || DANDELI_IMAGES[9];
+const cottageAFrameImg = DANDELI_IMAGES.find(i => i.publicId === "dandeli_cottage_4K_faithful") || nightCottagesImg;
+const safariTentRoomImg = DANDELI_IMAGES.find(i => i.publicId === "dandeli_dorm_room_4K_faithful") || nightCottagesImg;
+const familyBedroomImg = DANDELI_IMAGES.find(i => i.publicId === "dandeli_bedroom_4K_faithful") || poolDeckImg;
+const dormRoomImg = DANDELI_IMAGES.find(i => i.publicId === "dandeli_room_4K_faithful") || poolDeckImg;
+const junglePoolImg = DANDELI_IMAGES.find(i => i.publicId.includes("e5e39a54")) || poolDeckImg;
+const riverbankCottageImg = DANDELI_IMAGES.find(i => i.publicId.includes("8c7849cb")) || poolDeckImg;
+const zorbingImg = DANDELI_IMAGES.find(i => i.publicId.includes("84d548e8")) || kayakImg;
+const ropeChallengeImg = DANDELI_IMAGES.find(i => i.publicId.includes("3b7a54b3")) || ziplineImg;
+const supaDamImg = DANDELI_IMAGES.find(i => i.publicId.includes("e029f6e9")) || aerialRiverImg;
+const forestTrailImg = DANDELI_IMAGES.find(i => i.publicId.includes("302354b4")) || tigerImg;
+
+/**
+ * Centralized, art-directed photography system for the entire application.
+ * All sections consume from here, guaranteeing exact semantic alignment,
+ * zero random stock images, and responsive object positioning.
+ */
+export const dandeliImages = {
+  hero: {
+    primary: buildAsset(raftingHeroImg, 'center 40%', 'center 45%'),
+    fallback: buildAsset(raftingHeroImg, 'center 40%', 'center 45%'),
+    videoPoster: getCloudinaryUrl(raftingHeroImg.publicId, raftingHeroImg.version, raftingHeroImg.format, { width: 1600 }),
+  },
+
+  packages: {
+    'weekend-dandeli-escape': buildAsset(kayakImg, 'center', 'center'),
+    'adventure-weekend': buildAsset(raftingHeroImg, 'center 45%', 'center 45%'),
+    'family-nature-escape': buildAsset(elephantImg, 'center 40%', 'center 35%'),
+    'friends-adventure-trip': buildAsset(raftingGroupImg, 'center', 'center'),
+    'wildlife-explorer': buildAsset(tigerImg, 'center 35%', 'center 30%'),
+    'river-jungle-experience': buildAsset(aerialRiverImg, 'center', 'center'),
+    'camping-under-the-stars': buildAsset(nightCottagesImg, 'center', 'center'),
+    'large-group-getaway': buildAsset(raftingFleetImg, 'center', 'center'),
+    'pkg-couples-serenity': buildAsset(kayakSunsetImg, 'center', 'center'),
+    'pkg-friends-rapids': buildAsset(raftingActionImg, 'center', 'center'),
+    'pkg-family-wildlife': buildAsset(elephantImg, 'center 40%', 'center 35%'),
+    'pkg-corporate-clan': buildAsset(raftingGroupImg, 'center', 'center'),
+  },
+
+  activities: {
+    'white-water-rafting': buildAsset(raftingHeroImg, 'center 45%', 'center 45%'),
+    'kali-rafting': buildAsset(raftingHeroImg, 'center 45%', 'center 45%'),
+    'jungle-safari': buildAsset(tigerImg, 'center 35%', 'center 30%'),
+    'hornbill-safari': buildAsset(tigerImg, 'center 35%', 'center 30%'),
+    'jeep-safari': buildAsset(elephantImg, 'center 40%', 'center 35%'),
+    'kayaking': buildAsset(kayakImg, 'center', 'center'),
+    'supa-kayaking': buildAsset(kayakImg, 'center', 'center'),
+    'river-crossing-zipline': buildAsset(ziplineImg, 'center', 'center'),
+    'camping': buildAsset(safariTentRoomImg, 'center', 'center'),
+    'jungle-camping': buildAsset(nightCottagesImg, 'center', 'center'),
+    'natural-jacuzzi': buildAsset(rapidsAerialImg, 'center', 'center'),
+    'coracle-ride': buildAsset(coracleImg, 'center', 'center'),
+    'river-activities': buildAsset(coracleImg, 'center', 'center'),
+    'bird-watching': buildAsset(forestTrailImg, 'center', 'center'),
+    'waterfalls': buildAsset(waterfallImg, 'center', 'center'),
+    'syntheri-trek': buildAsset(waterfallImg, 'center', 'center'),
+    'nature-walks': buildAsset(forestTrailImg, 'center', 'center'),
+    'wildlife-experiences': buildAsset(tigerImg, 'center 35%', 'center 30%'),
+    'water-zorbing': buildAsset(zorbingImg, 'center', 'center'),
+    'rope-challenge': buildAsset(ropeChallengeImg, 'center', 'center'),
+  },
+
+  resorts: {
+    'kali-riverbank-lodge': buildAsset(poolDeckImg, 'center', 'center'),
+    'hornbill-canopy-treehouses': buildAsset(resortCabinsImg, 'center', 'center'),
+    'bison-valley-adventure-camp': buildAsset(cottageAFrameImg, 'center', 'center'),
+    'kogilban-nature-homestay': buildAsset(riverbankCottageImg, 'center', 'center'),
+    'kali-riverwoods-family-resort': buildAsset(junglePoolImg, 'center', 'center'),
+    'starry-kali-glamping-camp': buildAsset(nightCottagesImg, 'center', 'center'),
+    'wild-anshi-forest-retreat': buildAsset(resortCabinsImg, 'center', 'center'),
+    'river-breeze-kayakers-haven': buildAsset(poolDeckImg, 'center', 'center'),
+  },
+
+  rooms: [
+    {
+      id: 'luxury-safari-tent',
+      title: 'Luxury Safari Tent',
+      type: 'Riverside Glamping',
+      capacity: '2 – 3 Guests',
+      priceFrom: '₹1,850',
+      description: 'Raised wooden cots, crisp clean linens, weather-sealed canvas, and an attached private bath looking out onto misty bamboo.',
+      features: ['Direct River Proximity', 'Attached Stone Bath', '24x7 Power Backup', 'Campfire Access'],
+      asset: buildAsset(safariTentRoomImg, 'center', 'center'),
+    },
+    {
+      id: 'deluxe-family-suite',
+      title: 'Deluxe Family Room',
+      type: 'Eco-Resort Suite',
+      capacity: '3 – 5 Guests',
+      priceFrom: '₹3,400',
+      description: 'Generous teak-furnished suite with plush double beds, handcrafted headboards, scenic veranda, and child-safe non-slip bath.',
+      features: ['Air Conditioning', 'Private Viewing Veranda', 'Swimming Pool Access', 'Buffet Meals Included'],
+      asset: buildAsset(familyBedroomImg, 'center', 'center'),
+    },
+    {
+      id: 'forest-view-dormitory',
+      title: 'Forest View Dormitory',
+      type: 'Adventure Gang Stay',
+      capacity: '6 – 10 Guests',
+      priceFrom: '₹1,450',
+      description: 'Wide panoramic glass walls overlooking lush Western Ghats canopy, individual locker storage, and multiple hot-water showers.',
+      features: ['Panoramic Forest Glass', 'Individual Secure Lockers', 'Hot Water 24x7', 'Volleyball Lawn Access'],
+      asset: buildAsset(dormRoomImg, 'center', 'center'),
+    },
+    {
+      id: 'riverside-aframe-cottage',
+      title: 'A-Frame Timber Cottage',
+      type: 'Private Stilt Cottage',
+      capacity: '2 – 4 Guests',
+      priceFrom: '₹3,850',
+      description: 'Architectural triangular wooden cabins surrounded by tropical foliage. Veranda cantilevered towards the sound of Kali rapids.',
+      features: ['Handcrafted Teak Finish', 'Private Cantilever Deck', 'Starlit Evening Views', 'High-speed Wi-Fi & Coffee Bar'],
+      asset: buildAsset(nightCottagesImg, 'center', 'center'),
+    },
+  ],
+};

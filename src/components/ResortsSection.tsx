@@ -141,6 +141,7 @@ export const ResortsSection: React.FC<ResortsSectionProps> = ({ onOpenEnquiry })
                   src={featuredStay.coverImage}
                   alt={featuredStay.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  style={{ objectPosition: (featuredStay as any).objectPosition || 'center' }}
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F2218] via-[#0F2218]/25 to-transparent" />
@@ -285,6 +286,7 @@ export const ResortsSection: React.FC<ResortsSectionProps> = ({ onOpenEnquiry })
                     src={stay.coverImage}
                     alt={stay.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    style={{ objectPosition: (stay as any).objectPosition || 'center' }}
                     referrerPolicy="no-referrer"
                     loading="lazy"
                   />

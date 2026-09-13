@@ -234,7 +234,8 @@ export const AdventuresGrid: React.FC<AdventuresGridProps> = ({
                 <img
                   src={activity.image}
                   alt={activity.title}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  style={{ objectPosition: (activity as any).objectPosition || 'center' }}
                   referrerPolicy="no-referrer"
                   loading="lazy"
                 />

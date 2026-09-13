@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { optimizeCloudinaryUrl, getCloudinarySrcSet, IMAGE_SIZES, CloudinaryUrlOptions } from '../utils/imageOptimization';
 
 export interface ResponsiveImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -14,6 +14,8 @@ export interface ResponsiveImageProps extends React.ImgHTMLAttributes<HTMLImageE
   crop?: CloudinaryUrlOptions['crop'];
   quality?: CloudinaryUrlOptions['quality'];
   objectPosition?: string;
+  mobilePosition?: string;
+  desktopPosition?: string;
   onImageLoad?: () => void;
 }
 
@@ -22,6 +24,7 @@ export interface ResponsiveImageProps extends React.ImgHTMLAttributes<HTMLImageE
  * - Employs Cloudinary responsive transformations with AVIF/WebP auto-negotiation
  * - Uses native async decoding and eager/lazy prioritization
  * - Pre-allocates dimensions and background tones to eliminate Cumulative Layout Shift (CLS)
+ * - Supports responsive mobile vs desktop object-positioning for art-direction
  */
 export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   src,
@@ -36,11 +39,33 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   crop = 'fill' as const,
   quality = 'auto' as const,
   objectPosition,
+  mobilePosition,
+  desktopPosition,
   style,
   onImageLoad,
   ...rest
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 640;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || (!mobilePosition && !desktopPosition)) return;
+    const mql = window.matchMedia('(max-width: 640px)');
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    setIsMobile(mql.matches);
+    try {
+      mql.addEventListener('change', onChange);
+      return () => mql.removeEventListener('change', onChange);
+    } catch {
+      mql.addListener(onChange);
+      return () => mql.removeListener(onChange);
+    }
+  }, [mobilePosition, desktopPosition]);
 
   const isCloudinary = src && src.includes('res.cloudinary.com');
 
@@ -52,9 +77,16 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
     ? getCloudinarySrcSet(src, widths, { crop, quality })
     : undefined;
 
+  // Resolve responsive object position
+  const activePosition =
+    (isMobile ? mobilePosition : desktopPosition) ||
+    objectPosition ||
+    desktopPosition ||
+    'center';
+
   const combinedStyle: React.CSSProperties = {
     ...style,
-    ...(objectPosition ? { objectPosition } : {}),
+    objectPosition: activePosition,
   };
 
   return (

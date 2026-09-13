@@ -211,6 +211,7 @@ export const PackagesSection: React.FC<PackagesSectionProps> = ({
                       src={pkg.coverImage}
                       alt={pkg.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      style={{ objectPosition: (pkg as any).objectPosition || 'center' }}
                       referrerPolicy="no-referrer"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />

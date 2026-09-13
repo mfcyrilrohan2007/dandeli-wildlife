@@ -48,16 +48,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenEnquiry }) => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  // Prevent background scrolling when mobile menu is open
+  // Prevent background scrolling when mobile menu is open & listen for Escape
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') setMobileMenuOpen(false);
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = 'unset';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
     } else {
       document.body.style.overflow = 'unset';
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
   }, [mobileMenuOpen]);
 
   const desktopNavLinks = [
@@ -201,13 +206,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenEnquiry }) => {
             </div>
 
             {/* Mobile Header Right */}
-            <div className="flex xl:hidden items-center gap-2 shrink-0">
-              <Link
-                to="/contact"
-                className="min-h-[44px] px-3 sm:px-3.5 rounded-xl bg-[#2E6B68] active:bg-[#235452] text-white font-sans font-medium text-xs uppercase tracking-wider flex items-center justify-center shrink-0 shadow-sm"
-              >
-                Plan Trip
-              </Link>
+            <div className="flex xl:hidden items-center shrink-0">
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
@@ -313,14 +312,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenEnquiry }) => {
 
           {/* Drawer Bottom Actions */}
           <div className="pt-4 border-t border-white/10 space-y-3">
-            <Link
-              to="/contact"
-              onClick={() => setMobileMenuOpen(false)}
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenEnquiry('Mobile Nav Drawer');
+              }}
               className="w-full min-h-[48px] py-3.5 px-6 rounded-xl bg-[#2E6B68] hover:bg-[#235452] active:scale-[0.98] text-white font-sans font-medium text-xs uppercase tracking-wider transition-all duration-150 shadow-md flex items-center justify-center gap-2 cursor-pointer interactive-tap"
             >
               <span>PLAN YOUR TRIP</span>
               <ArrowUpRight className="w-4 h-4" />
-            </Link>
+            </button>
 
             <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-xs text-stone-300">
               <a

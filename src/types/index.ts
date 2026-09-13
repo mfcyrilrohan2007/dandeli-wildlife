@@ -20,6 +20,9 @@ export interface Activity {
   description: string;
   location: string;
   image: string;
+  objectPosition?: string;
+  desktopPosition?: string;
+  mobilePosition?: string;
   highlights: string[];
   safetyGear: string[];
   timing: string;
@@ -40,6 +43,9 @@ export interface TravelPackage {
   priceRange: string;
   originalPrice?: number;
   coverImage: string;
+  objectPosition?: string;
+  desktopPosition?: string;
+  mobilePosition?: string;
   badge: string;
   stayType: string;
   accommodationDetails?: string;
@@ -79,6 +85,9 @@ export interface ResortStay {
   facilities: string[];
   nearbyActivities: string[];
   coverImage: string;
+  objectPosition?: string;
+  desktopPosition?: string;
+  mobilePosition?: string;
   gallery: string[];
   architectureStyle?: string;
   diningStyle?: string;
