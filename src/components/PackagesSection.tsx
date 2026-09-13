@@ -109,7 +109,7 @@ export const PackagesSection: React.FC<PackagesSectionProps> = ({
           <div className="mt-8 sm:mt-12 rounded-3xl bg-white border border-stone-200/90 shadow-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0 transition-all duration-300 hover:border-[#247565]/40 hover:shadow-xl">
             <div className="lg:col-span-7 relative h-64 sm:h-72 lg:h-full min-h-[280px] sm:min-h-[360px] overflow-hidden bg-stone-900">
               <img
-                src="/images/kali-rafting-hero.jpg"
+                src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_rafting_4k.png"
                 alt="Adventure Weekend Dandeli"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"

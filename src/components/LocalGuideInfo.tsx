@@ -172,25 +172,26 @@ export const LocalGuideInfo: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className="rounded-xl bg-white border border-stone-200/90 overflow-hidden shadow-sm"
+                  className="rounded-xl bg-white border border-stone-200/90 overflow-hidden shadow-sm transition-colors duration-150"
                 >
                   <button
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-display font-bold text-sm text-[#142C21]"
+                    className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-display font-bold text-sm text-[#142C21] hover:bg-stone-50/80 active:bg-stone-100/60 transition-colors duration-150 cursor-pointer min-h-[52px]"
+                    aria-expanded={isOpen}
                   >
                     <span>{faq.q}</span>
-                    {isOpen ? (
-                      <ChevronUp className="w-4 h-4 text-[#247565] shrink-0" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-stone-400 shrink-0" />
-                    )}
+                    <ChevronDown
+                      className={`w-4 h-4 text-[#247565] shrink-0 transition-transform duration-200 ease-out ${
+                        isOpen ? 'rotate-180' : 'text-stone-400 rotate-0'
+                      }`}
+                    />
                   </button>
-                  {isOpen && (
+                  <div className={`accordion-content-grid ${isOpen ? 'open' : 'closed'}`}>
                     <div className="px-5 pb-5 text-xs sm:text-sm text-stone-600 leading-relaxed border-t border-stone-100 pt-3">
                       {faq.a}
                     </div>
-                  )}
+                  </div>
                 </div>
               );
             })}

@@ -11,8 +11,11 @@ import {
   ShieldCheck,
   Compass,
   ArrowRight,
+  Waves,
+  Clock,
 } from 'lucide-react';
 import { TRAVEL_PACKAGES } from '../data/dandeliData';
+import { HeroPanoramicMontage } from '../components/HeroPanoramicMontage';
 
 export const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -66,33 +69,24 @@ export const ContactPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2] text-[#1C1D1F]">
-      {/* Hero */}
-      <section className="relative pt-32 pb-16 sm:pt-40 sm:pb-24 bg-[#18191B] text-white overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-20">
-          <img
-            src="/images/kali-river.jpg"
-            alt="Kali River Gorge"
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-          />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#18191B]/95 via-[#18191B]/85 to-[#FAF7F2] pointer-events-none" />
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 text-center sm:text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 border border-white/15 text-[#EAE3D8] text-xs font-sans tracking-wider uppercase font-medium">
-            <Compass className="w-3.5 h-3.5" />
-            <span>Direct Local Expeditions Desk</span>
-          </div>
-
-          <h1 className="font-serif text-4xl sm:text-6xl font-normal tracking-tight text-white max-w-4xl">
-            Plan Your Dandeli Trip
-          </h1>
-
-          <p className="text-stone-300 text-base sm:text-lg max-w-2xl leading-relaxed font-sans font-light">
-            Tell us about your dates and travelling party. A native Ganeshgudi river guide will check water release schedules, cottage slots, and verify your tailored itinerary.
-          </p>
-        </div>
-      </section>
+      {/* 1. Signature 4-Panel Panoramic Hero Montage */}
+      <HeroPanoramicMontage
+        badgeIcon={Compass}
+        badgeText="DIRECT LOCAL EXPEDITIONS DESK"
+        title="Plan Your Dandeli Trip"
+        tagline="Tell us about your dates and travelling party. A native Ganeshgudi river guide will check water release schedules, cottage slots, and verify your tailored itinerary."
+        bullets={[
+          { icon: Waves, text: 'Real-time Supa Dam Water Release Tracking' },
+          { icon: ShieldCheck, text: 'Direct Ganeshgudi River Marshal Support' },
+          { icon: Clock, text: 'Instant WhatsApp & Call Response within 2 hrs' },
+        ]}
+        panels={[
+          { image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_rafting_4k.png', alt: 'White Water Rafting' },
+          { image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_pool_deck_4K_faithful.png', alt: 'Riverside Cottage Stay' },
+          { image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988950/14fb0c52-22f0-4fe7-8898-8ec073fa8ff1.png', alt: 'Syntheri Rocks Canyon' },
+          { image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_cottages_night_4K_faithful.png', alt: 'Campfire Night Under Trees' },
+        ]}
+      />
 
       {/* Main Form & Contact Information Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
@@ -418,7 +412,7 @@ export const ContactPage: React.FC = () => {
                 href="https://wa.me/919481245890?text=Hello%20Dandeli%20Wilds%2C%20I%20would%20like%20to%20plan%20a%20trip"
                 target="_blank"
                 rel="noreferrer"
-                className="w-full py-3 px-6 rounded-xl bg-[#2E6B68] hover:bg-[#235452] text-white font-sans font-medium text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2"
+                className="w-full min-h-[48px] py-3.5 px-6 rounded-xl bg-[#2E6B68] hover:bg-[#235452] text-white font-sans font-medium text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2"
               >
                 <span>Chat on WhatsApp</span>
               </a>

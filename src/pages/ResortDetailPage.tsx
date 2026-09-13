@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { getResortBySlug } from '../utils/slugHelpers';
 import { RESORT_STAYS } from '../data/dandeliData';
+import { optimizeCloudinaryUrl } from '../utils/imageOptimization';
 
 interface ResortDetailPageProps {
   onOpenEnquiry: (preselectedItem?: string) => void;
@@ -53,10 +54,12 @@ export const ResortDetailPage: React.FC<ResortDetailPageProps> = ({ onOpenEnquir
     <div className="min-h-screen bg-[#FAF7F2] text-[#1C1D1F]">
       {/* 1. Large Hero Image with Breadcrumb & Title */}
       <section className="relative min-h-[60vh] sm:min-h-[70vh] flex flex-col justify-between overflow-hidden text-white pt-24 sm:pt-28">
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 bg-stone-900">
           <img
-            src={stay.coverImage}
+            src={optimizeCloudinaryUrl(stay.coverImage, 1280)}
             alt={stay.name}
+            fetchPriority="high"
+            decoding="async"
             className="w-full h-full object-cover object-center"
             referrerPolicy="no-referrer"
           />
@@ -93,8 +96,8 @@ export const ResortDetailPage: React.FC<ResortDetailPageProps> = ({ onOpenEnquir
 
           <div className="pt-2 flex flex-wrap items-center gap-4 text-xs font-sans text-stone-300">
             <span className="flex items-center gap-1.5 text-[#EAE3D8] font-medium">
-              <Star className="w-3.5 h-3.5 fill-[#C25E3E] text-[#C25E3E]" />
-              {stay.rating || 4.8} / 5.0 ({stay.reviewsCount || 128} verified guest reviews)
+              <ShieldCheck className="w-3.5 h-3.5 text-[#2E6B68]" />
+              Hand-Inspected Wilderness Property
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5">
@@ -121,10 +124,12 @@ export const ResortDetailPage: React.FC<ResortDetailPageProps> = ({ onOpenEnquir
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {stay.gallery.map((img, idx) => (
-                  <div key={idx} className="h-44 sm:h-52 rounded-xl overflow-hidden border border-[#E5DFD7] shadow-sm">
+                  <div key={idx} className="h-44 sm:h-52 rounded-xl overflow-hidden bg-stone-200 border border-[#E5DFD7] shadow-sm">
                     <img
-                      src={img}
+                      src={optimizeCloudinaryUrl(img, 480)}
                       alt={`${stay.name} photo ${idx + 1}`}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />
@@ -253,8 +258,8 @@ export const ResortDetailPage: React.FC<ResortDetailPageProps> = ({ onOpenEnquir
                   <span className="font-medium text-[#1C1D1F] text-right">{stay.diningStyle || 'All meals included (Buffet style)'}</span>
                 </div>
                 <div className="flex items-start justify-between gap-2 py-2">
-                  <span className="text-stone-400">Rating:</span>
-                  <span className="font-medium text-right text-[#2E6B68]">★ {stay.rating || 4.8} / 5.0</span>
+                  <span className="text-stone-400">Audit Status:</span>
+                  <span className="font-medium text-right text-[#2E6B68]">Verified Eco-Property</span>
                 </div>
               </div>
 
@@ -304,10 +309,12 @@ export const ResortDetailPage: React.FC<ResortDetailPageProps> = ({ onOpenEnquir
                 to={`/resorts/${rel.id}`}
                 className="group rounded-2xl overflow-hidden bg-white border border-[#E5DFD7] hover:border-[#2E6B68] transition-all shadow-sm hover:shadow-md flex flex-col justify-between"
               >
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative h-48 overflow-hidden bg-stone-200">
                   <img
-                    src={rel.coverImage}
+                    src={optimizeCloudinaryUrl(rel.coverImage, 480)}
                     alt={rel.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     referrerPolicy="no-referrer"
                   />

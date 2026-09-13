@@ -59,7 +59,7 @@ export const AboutUs: React.FC<AboutUsProps> = ({ onOpenEnquiry }) => {
           {/* Main Primary Image: Local Guides on River Deck */}
           <div className="md:col-span-7 rounded-3xl overflow-hidden shadow-xl bg-stone-200 relative min-h-[360px] sm:min-h-[460px] group">
             <img
-              src="/images/local-guides.jpg"
+              src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988863/d2ce9490-3b38-45f2-883e-101f102eb22b.png"
               alt="Local naturalists and guides on the Kali river deck in Dandeli"
               className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-700 ease-out"
               referrerPolicy="no-referrer"
@@ -79,7 +79,7 @@ export const AboutUs: React.FC<AboutUsProps> = ({ onOpenEnquiry }) => {
           <div className="md:col-span-5 grid grid-cols-1 gap-5">
             <div className="rounded-3xl overflow-hidden shadow-xl bg-stone-200 relative min-h-[220px] group">
               <img
-                src="/images/river-briefing.jpg"
+                src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988863/d2ce9490-3b38-45f2-883e-101f102eb22b.png"
                 alt="River rafting crew and travelers preparing on the Kali riverbank"
                 className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-700 ease-out"
                 referrerPolicy="no-referrer"
@@ -97,7 +97,7 @@ export const AboutUs: React.FC<AboutUsProps> = ({ onOpenEnquiry }) => {
 
             <div className="rounded-3xl overflow-hidden shadow-xl bg-stone-200 relative min-h-[220px] group">
               <img
-                src="/images/hornbill-wildlife.jpg"
+                src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988775/fbdd8834-14ff-4f93-8f6b-bd85566424e3.png"
                 alt="Hornbill wildlife in Dandeli canopy"
                 className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-700 ease-out"
                 referrerPolicy="no-referrer"
@@ -323,7 +323,7 @@ export const AboutUs: React.FC<AboutUsProps> = ({ onOpenEnquiry }) => {
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="rounded-3xl overflow-hidden shadow-lg bg-stone-300 h-80 relative group">
               <img
-                src="/images/nature-walks.jpg"
+                src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988796/302354b4-08c1-4f98-8ce3-ddc6b60f5b1c.png"
                 alt="Local naturalist guiding a forest walk"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 referrerPolicy="no-referrer"
@@ -336,7 +336,7 @@ export const AboutUs: React.FC<AboutUsProps> = ({ onOpenEnquiry }) => {
 
             <div className="rounded-3xl overflow-hidden shadow-lg bg-stone-300 h-80 relative group">
               <img
-                src="/images/kali-kayak.jpg"
+                src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988909/84aece0b-ced0-4594-89d9-afd465f38c98.png"
                 alt="Kayaking on calm Kali River water"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 referrerPolicy="no-referrer"

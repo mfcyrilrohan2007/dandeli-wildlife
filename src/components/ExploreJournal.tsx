@@ -58,7 +58,7 @@ export const ExploreJournal: React.FC<ExploreJournalProps> = ({ onSelectCategory
             <div className="grid grid-cols-1 lg:grid-cols-12">
               <div className="lg:col-span-8 relative h-80 sm:h-[420px] overflow-hidden">
                 <img
-                  src="/images/kali-rafting-hero.jpg"
+                  src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_rafting_4k.png"
                   alt="Rafting on the Kali River rapids"
                   className="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-700 ease-out"
                   referrerPolicy="no-referrer"
@@ -112,7 +112,7 @@ export const ExploreJournal: React.FC<ExploreJournalProps> = ({ onSelectCategory
             >
               <div className="relative h-72 sm:h-80 overflow-hidden">
                 <img
-                  src="/images/hornbill-wildlife.jpg"
+                  src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988775/fbdd8834-14ff-4f93-8f6b-bd85566424e3.png"
                   alt="Great Indian Hornbill perched in Dandeli rainforest canopy"
                   className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
                   referrerPolicy="no-referrer"
@@ -152,7 +152,7 @@ export const ExploreJournal: React.FC<ExploreJournalProps> = ({ onSelectCategory
             >
               <div className="relative h-72 sm:h-80 overflow-hidden">
                 <img
-                  src="/images/jungle-camp.jpg"
+                  src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_resort_cabins_4K_faithful.png"
                   alt="Riverside camping tents under starry forest sky in Dandeli"
                   className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
                   referrerPolicy="no-referrer"
@@ -195,7 +195,7 @@ export const ExploreJournal: React.FC<ExploreJournalProps> = ({ onSelectCategory
             >
               <div className="relative h-64 sm:h-72 overflow-hidden">
                 <img
-                  src="/images/syntheri-rocks.jpg"
+                  src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988950/14fb0c52-22f0-4fe7-8898-8ec073fa8ff1.png"
                   alt="Syntheri Rocks 300ft monolithic limestone canyon and waterfall"
                   className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
                   referrerPolicy="no-referrer"
@@ -235,7 +235,7 @@ export const ExploreJournal: React.FC<ExploreJournalProps> = ({ onSelectCategory
             >
               <div className="relative h-64 sm:h-72 overflow-hidden">
                 <img
-                  src="/images/jungle-safari.jpg"
+                  src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_tiger_4K.png"
                   alt="Anshi National Park open top 4x4 jungle safari in Dandeli"
                   className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
                   referrerPolicy="no-referrer"
@@ -277,7 +277,7 @@ export const ExploreJournal: React.FC<ExploreJournalProps> = ({ onSelectCategory
             <div className="grid grid-cols-1 lg:grid-cols-12">
               <div className="lg:col-span-7 relative h-72 sm:h-96 overflow-hidden">
                 <img
-                  src="/images/kali-kayak.jpg"
+                  src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988909/84aece0b-ced0-4594-89d9-afd465f38c98.png"
                   alt="Dawn coracle boat ride and kayaking on calm Kali river"
                   className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
                   referrerPolicy="no-referrer"

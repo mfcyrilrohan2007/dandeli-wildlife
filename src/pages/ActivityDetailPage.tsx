@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { getActivityBySlug, getCleanActivitySlug } from '../utils/slugHelpers';
 import { ACTIVITIES } from '../data/dandeliData';
+import { optimizeCloudinaryUrl } from '../utils/imageOptimization';
 
 interface ActivityDetailPageProps {
   onOpenEnquiry: (preselectedItem?: string) => void;
@@ -52,10 +53,12 @@ export const ActivityDetailPage: React.FC<ActivityDetailPageProps> = ({ onOpenEn
     <div className="min-h-screen bg-[#FAF7F2] text-[#1C1D1F]">
       {/* 1. Hero Banner */}
       <section className="relative min-h-[60vh] sm:min-h-[70vh] flex flex-col justify-between overflow-hidden text-white pt-24 sm:pt-28">
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 bg-stone-900">
           <img
-            src={activity.image}
+            src={optimizeCloudinaryUrl(activity.image, 1280)}
             alt={activity.title}
+            fetchPriority="high"
+            decoding="async"
             className="w-full h-full object-cover object-center"
             referrerPolicy="no-referrer"
           />
@@ -293,10 +296,12 @@ export const ActivityDetailPage: React.FC<ActivityDetailPageProps> = ({ onOpenEn
                   to={`/activities/${cleanSlug}`}
                   className="group rounded-2xl overflow-hidden bg-white border border-[#E5DFD7] hover:border-[#2E6B68] transition-all shadow-sm hover:shadow-md flex flex-col justify-between"
                 >
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative h-48 overflow-hidden bg-stone-200">
                     <img
-                      src={rel.image}
+                      src={optimizeCloudinaryUrl(rel.image, 480)}
                       alt={rel.title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />

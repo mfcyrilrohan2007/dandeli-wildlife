@@ -162,7 +162,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                     placeholder="e.g. Rahul Sharma"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full min-h-[46px] px-4 py-3 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] transition-colors placeholder:text-stone-400 font-sans"
+                    className="w-full min-h-[46px] px-4 py-3 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] focus:ring-2 focus:ring-[#2E6B68]/20 transition-all duration-150 placeholder:text-stone-400 font-sans"
                   />
                 </div>
 
@@ -177,7 +177,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                     placeholder="e.g. +91 98765 43210"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full min-h-[46px] px-4 py-3 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] transition-colors placeholder:text-stone-400 font-sans"
+                    className="w-full min-h-[46px] px-4 py-3 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] focus:ring-2 focus:ring-[#2E6B68]/20 transition-all duration-150 placeholder:text-stone-400 font-sans"
                   />
                 </div>
               </div>
@@ -191,7 +191,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                   <select
                     value={groupCategory}
                     onChange={(e) => setGroupCategory(e.target.value)}
-                    className="w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] transition-colors font-sans"
+                    className="w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] focus:ring-2 focus:ring-[#2E6B68]/20 transition-all duration-150 font-sans cursor-pointer"
                   >
                     <option value="friends">Friends Gang (3-8 Pax)</option>
                     <option value="solo-duo">Couples & Duo (1-2 Pax)</option>
@@ -208,7 +208,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setGuestCount((c) => Math.max(1, c - 1))}
-                      className="min-w-[46px] min-h-[46px] rounded-xl bg-white hover:bg-stone-100 border border-[#E5DFD7] flex items-center justify-center text-[#1C1D1F] cursor-pointer active:scale-95 transition-colors"
+                      className="min-w-[46px] min-h-[46px] rounded-xl bg-white hover:bg-stone-100 border border-[#E5DFD7] flex items-center justify-center text-[#1C1D1F] cursor-pointer active:scale-95 transition-transform duration-100"
                       aria-label="Decrease guests"
                     >
                       <Minus className="w-4 h-4" />
@@ -221,7 +221,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setGuestCount((c) => Math.min(50, c + 1))}
-                      className="min-w-[46px] min-h-[46px] rounded-xl bg-white hover:bg-stone-100 border border-[#E5DFD7] flex items-center justify-center text-[#1C1D1F] cursor-pointer active:scale-95 transition-colors"
+                      className="min-w-[46px] min-h-[46px] rounded-xl bg-white hover:bg-stone-100 border border-[#E5DFD7] flex items-center justify-center text-[#1C1D1F] cursor-pointer active:scale-95 transition-transform duration-100"
                       aria-label="Increase guests"
                     >
                       <Plus className="w-4 h-4" />
@@ -240,7 +240,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                     type="date"
                     value={travelDate}
                     onChange={(e) => setTravelDate(e.target.value)}
-                    className="w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] transition-colors font-sans"
+                    className="w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] focus:ring-2 focus:ring-[#2E6B68]/20 transition-all duration-150 font-sans cursor-pointer"
                   />
                 </div>
 
@@ -252,7 +252,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                     type="text"
                     value={selectedInterest}
                     onChange={(e) => setSelectedInterest(e.target.value)}
-                    className="w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] transition-colors font-sans"
+                    className="w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] focus:ring-2 focus:ring-[#2E6B68]/20 transition-all duration-150 font-sans"
                   />
                 </div>
               </div>
@@ -267,7 +267,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                   placeholder="e.g. Vegetarian food only, elderly member needing ground floor room, cab pickup from Hubballi, etc."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] transition-colors placeholder:text-stone-400 font-sans"
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-[#E5DFD7] text-[#1C1D1F] text-base sm:text-sm focus:outline-none focus:border-[#2E6B68] focus:ring-2 focus:ring-[#2E6B68]/20 transition-all duration-150 placeholder:text-stone-400 font-sans"
                 ></textarea>
               </div>
 
@@ -276,7 +276,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full min-h-[50px] py-3.5 px-6 rounded-xl bg-[#2E6B68] hover:bg-[#235452] disabled:bg-stone-400 text-white font-sans font-medium text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95 cursor-pointer"
+                  className="w-full min-h-[50px] py-3.5 px-6 rounded-xl bg-[#2E6B68] hover:bg-[#235452] disabled:bg-stone-400 text-white font-sans font-medium text-xs uppercase tracking-wider transition-all duration-150 flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] cursor-pointer interactive-tap"
                 >
                   {isSubmitting ? (
                     <>

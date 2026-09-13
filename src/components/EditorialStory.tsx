@@ -66,7 +66,7 @@ export const EditorialStory: React.FC = () => {
           <div className="lg:col-span-5 relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-stone-200">
               <img
-                src="/images/forest-canopy.jpg"
+                src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988959/cc6364c1-6675-432f-8d98-64c73cb38b99.png"
                 alt="Dense teak and bamboo canopy of Dandeli Western Ghats"
                 className="w-full h-[420px] object-cover"
                 referrerPolicy="no-referrer"

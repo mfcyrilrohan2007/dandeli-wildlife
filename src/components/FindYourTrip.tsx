@@ -59,7 +59,7 @@ export const TRIP_PLANS: Record<TripCategory, TripPlanDetail> = {
     shortDescription:
       'For travellers who want a quiet escape, immersive nature, birdwatching, and personal adventure at their own unhurried pace.',
     accentColor: '#247565',
-    image: '/images/forest-canopy.jpg',
+    image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988959/cc6364c1-6675-432f-8d98-64c73cb38b99.png',
     icon: <User className="w-5 h-5" />,
     recommendedActivities: [
       'Mindful Supa Backwaters Kayaking',
@@ -107,7 +107,7 @@ export const TRIP_PLANS: Record<TripCategory, TripPlanDetail> = {
     shortDescription:
       'For two people looking for a relaxed adventure, private scenic stays, quiet boat drifts, and memorable moments away from the crowds.',
     accentColor: '#8C5E3C',
-    image: '/images/kali-kayak.jpg',
+    image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988909/84aece0b-ced0-4594-89d9-afd465f38c98.png',
     icon: <Heart className="w-5 h-5" />,
     recommendedActivities: [
       'Sunrise Coracle Drift for Two',
@@ -155,7 +155,7 @@ export const TRIP_PLANS: Record<TripCategory, TripPlanDetail> = {
     shortDescription:
       'For groups of friends looking for white-water rafting, cliff jumps, natural jacuzzi rapids, riverside camping, and non-stop adventure.',
     accentColor: '#D97706',
-    image: '/images/kali-rafting-hero.jpg',
+    image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_rafting_4k.png',
     icon: <Users className="w-5 h-5" />,
     recommendedActivities: [
       'Full 9.5 km White-Water Rafting (Class III–IV)',
@@ -204,7 +204,7 @@ export const TRIP_PLANS: Record<TripCategory, TripPlanDetail> = {
     shortDescription:
       'For families looking for comfortable stays, child-friendly activities, senior-accessible trails, wildlife spotting, and relaxed bonding.',
     accentColor: '#2563EB',
-    image: '/images/jungle-safari.jpg',
+    image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_tiger_4K.png',
     icon: <Compass className="w-5 h-5" />,
     recommendedActivities: [
       'Open-Top 4x4 Anshi Wildlife Safari',
@@ -261,7 +261,7 @@ export const TRIP_PLANS: Record<TripCategory, TripPlanDetail> = {
     shortDescription:
       'For 4+ people, college clans, corporate team offsites, and celebrations seeking dedicated coordinators, group challenges, and private resort blocks.',
     accentColor: '#7C3AED',
-    image: '/images/campfire-night.jpg',
+    image: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_cottages_night_4K_faithful.png',
     icon: <Building2 className="w-5 h-5" />,
     recommendedActivities: [
       'Multi-Boat Raft Derby & Team Races',

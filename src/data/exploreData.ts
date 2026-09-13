@@ -1,3 +1,5 @@
+import { DandeliDestination, DestinationJourneyBridge } from './destinationsData';
+
 export interface ExploreCategory {
   slug: string;
   title: string;
@@ -16,6 +18,8 @@ export interface ExploreCategory {
   relatedSlugs: string[];
   accentColor: string;
   elevationOrArea: string;
+  destination?: DandeliDestination;
+  journeyBridge?: DestinationJourneyBridge;
 }
 
 export const EXPLORE_CATEGORIES: Record<string, ExploreCategory> = {
@@ -24,12 +28,12 @@ export const EXPLORE_CATEGORIES: Record<string, ExploreCategory> = {
     title: 'White Water Rafting',
     subtitle: 'Kali River Rapids • Ganeshgudi Gorge',
     tagline: 'Nine named mountain rapids churning through deep Western Ghats teak forests',
-    heroImage: '/images/kali-rafting-hero.jpg',
+    heroImage: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_rafting_4k.png',
     gallery: [
-      '/images/kali-rafting-hero.jpg',
-      '/images/kali-river.jpg',
-      '/images/river-activities.jpg',
-      '/images/kali-kayak.jpg',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_rafting_4k.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988975/7c6871cf-f09f-49dd-a861-b5e76c52736a.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988819/67a8c8ac-2f61-4e9f-a2ba-3d6dc59de7b1.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988909/84aece0b-ced0-4594-89d9-afd465f38c98.png',
     ],
     intro:
       'Dandeli is South India’s premier white-water river hub. Fed by timed mountain water surges from the Supa Dam reservoir, the Kali River transforms into a foaming 9.5-kilometer playground of Class III and IV rapids. Accompanied by certified International Rafting Federation (IRF) river captains, crews navigate adrenaline-pumping drops before floating past tranquil emerald backwaters and leaping into safe cliff-jump pools.',
@@ -64,12 +68,12 @@ export const EXPLORE_CATEGORIES: Record<string, ExploreCategory> = {
     title: 'Jungle Safari',
     subtitle: 'Anshi National Park & Dandeli Wildlife Sanctuary',
     tagline: 'Quiet tracking through moist deciduous Western Ghats canopy with forest department rangers',
-    heroImage: '/images/jungle-safari.jpg',
+    heroImage: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_tiger_4K.png',
     gallery: [
-      '/images/jungle-safari.jpg',
-      '/images/jeep-safari.jpg',
-      '/images/forest-canopy.jpg',
-      '/images/nature-walks.jpg',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_tiger_4K.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988775/fbdd8834-14ff-4f93-8f6b-bd85566424e3.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988959/cc6364c1-6675-432f-8d98-64c73cb38b99.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988796/302354b4-08c1-4f98-8ce3-ddc6b60f5b1c.png',
     ],
     intro:
       'The Dandeli-Anshi Tiger Reserve spans over 1,300 square kilometers of contiguous Western Ghats forest. As your open-top safari vehicle winds along red-laterite logging tracks, native forest department trackers read fresh tracks, alarm calls, and broken bamboo twigs. Home to elusive black panthers, tigers, leopards, Indian gaurs, and over 300 bird species, every safari turn holds natural suspense.',
@@ -104,12 +108,12 @@ export const EXPLORE_CATEGORIES: Record<string, ExploreCategory> = {
     title: 'Wilderness Camping',
     subtitle: 'Riverbank Starlight Camps & Forest Clearings',
     tagline: 'Fall asleep to cicada choruses and waking river mists under pristine dark skies',
-    heroImage: '/images/campfire-night.jpg',
+    heroImage: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_cottages_night_4K_faithful.png',
     gallery: [
-      '/images/campfire-night.jpg',
-      '/images/jungle-camp.jpg',
-      '/images/kali-river.jpg',
-      '/images/nature-walks.jpg',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_cottages_night_4K_faithful.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_resort_cabins_4K_faithful.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988975/7c6871cf-f09f-49dd-a861-b5e76c52736a.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988796/302354b4-08c1-4f98-8ce3-ddc6b60f5b1c.png',
     ],
     intro:
       'Experience the magic of Dandeli after sunset. Far away from city glare, our riverbank campsites sit beneath towering teak trees and bamboo stands. Gather around crackling teak bonfires, enjoy charcoal grilled barbecue skewers, gaze at the shimmering arc of the Milky Way, and wake up to emerald river waters shrouded in cool morning vapor.',
@@ -144,12 +148,12 @@ export const EXPLORE_CATEGORIES: Record<string, ExploreCategory> = {
     title: 'Wildlife & Hornbill Trails',
     subtitle: 'Western Ghats Biodiversity Hotspot',
     tagline: 'Home to four species of hornbills, flying squirrels, and the legendary black panther',
-    heroImage: '/images/forest-canopy.jpg',
+    heroImage: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988959/cc6364c1-6675-432f-8d98-64c73cb38b99.png',
     gallery: [
-      '/images/forest-canopy.jpg',
-      '/images/jungle-safari.jpg',
-      '/images/nature-walks.jpg',
-      '/images/jeep-safari.jpg',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988959/cc6364c1-6675-432f-8d98-64c73cb38b99.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_tiger_4K.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988796/302354b4-08c1-4f98-8ce3-ddc6b60f5b1c.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988775/fbdd8834-14ff-4f93-8f6b-bd85566424e3.png',
     ],
     intro:
       'Dandeli is celebrated globally by ornithologists and nature photographers as the Hornbill Capital of South India. The dense canopy hosts all four South Indian hornbill species—the Great Indian Hornbill, Malabar Pied Hornbill, Malabar Grey Hornbill, and the Common Grey Hornbill. Early mornings along the Kali riverbank reveal feeding flocks swooping between fruiting fig trees.',
@@ -183,12 +187,12 @@ export const EXPLORE_CATEGORIES: Record<string, ExploreCategory> = {
     title: 'Waterfalls & Hidden Canyons',
     subtitle: 'Sathodi, Magod & Syntheri Rocks',
     tagline: 'Thundering cascades dropping into emerald granite plunge pools nestled in virgin rainforests',
-    heroImage: '/images/dandeli-waterfalls.jpg',
+    heroImage: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988789/ff97df5f-a6fa-4fd2-9d6a-051471e513dc.png',
     gallery: [
-      '/images/dandeli-waterfalls.jpg',
-      '/images/syntheri-rocks.jpg',
-      '/images/kali-river.jpg',
-      '/images/river-activities.jpg',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988789/ff97df5f-a6fa-4fd2-9d6a-051471e513dc.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988950/14fb0c52-22f0-4fe7-8898-8ec073fa8ff1.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988975/7c6871cf-f09f-49dd-a861-b5e76c52736a.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988819/67a8c8ac-2f61-4e9f-a2ba-3d6dc59de7b1.png',
     ],
     intro:
       'The rugged topography around Dandeli is carved by dramatic river canyons and plunging cascades. From the 300-foot ancient monolithic granite face of Syntheri Rocks to the spectacular multi-tiered drops of Sathodi and Magod falls, the region offers some of the most untouched waterfall ecosystems in Karnataka.',
@@ -222,12 +226,12 @@ export const EXPLORE_CATEGORIES: Record<string, ExploreCategory> = {
     title: 'Nature & Botanical Walks',
     subtitle: 'Canopy Trails & Medicinal Flora',
     tagline: 'Slow, sensory journeys through ancient moist deciduous rainforests and medicinal groves',
-    heroImage: '/images/nature-walks.jpg',
+    heroImage: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988796/302354b4-08c1-4f98-8ce3-ddc6b60f5b1c.png',
     gallery: [
-      '/images/nature-walks.jpg',
-      '/images/forest-canopy.jpg',
-      '/images/syntheri-rocks.jpg',
-      '/images/kali-river.jpg',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988796/302354b4-08c1-4f98-8ce3-ddc6b60f5b1c.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988959/cc6364c1-6675-432f-8d98-64c73cb38b99.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988950/14fb0c52-22f0-4fe7-8898-8ec073fa8ff1.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988975/7c6871cf-f09f-49dd-a861-b5e76c52736a.png',
     ],
     intro:
       'Step away from mechanized travel and walk along trails tread by generations of indigenous forest communities. Dandeli’s rainforests harbor rare medicinal herbs, strangler figs, wild cinnamon, and towering rosewood trees. Led by a local botanist and native tracker, every walk unveils the intricate interdependence of fungi, insects, and towering forest giants.',
@@ -261,12 +265,12 @@ export const EXPLORE_CATEGORIES: Record<string, ExploreCategory> = {
     title: 'River Expeditions & Floats',
     subtitle: 'Kali Backwaters & Natural Jacuzzis',
     tagline: 'Artisanal coracle floats, bubbling boulder whirlpools, and peaceful kayak drifts',
-    heroImage: '/images/river-activities.jpg',
+    heroImage: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988819/67a8c8ac-2f61-4e9f-a2ba-3d6dc59de7b1.png',
     gallery: [
-      '/images/river-activities.jpg',
-      '/images/kali-kayak.jpg',
-      '/images/kali-river.jpg',
-      '/images/kali-rafting-hero.jpg',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988819/67a8c8ac-2f61-4e9f-a2ba-3d6dc59de7b1.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988909/84aece0b-ced0-4594-89d9-afd465f38c98.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988975/7c6871cf-f09f-49dd-a861-b5e76c52736a.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_rafting_4k.png',
     ],
     intro:
       'For those who want to experience the healing spirit of the Kali River without committing to extreme rapids, Dandeli offers serene water journeys. Spin gently across sunlit backwaters in an artisanal bamboo coracle, paddle sit-on-top kayaks along mirror-flat inlets, or wedge into natural boulder channels where foamy river currents provide a therapeutic hydro-massage.',
@@ -300,12 +304,12 @@ export const EXPLORE_CATEGORIES: Record<string, ExploreCategory> = {
     title: 'Ancient Rainforest Canopies',
     subtitle: 'Dandeli Forest Reserves & Bamboo Jungles',
     tagline: 'Vast expanses of teak, rosewood, and bamboo sustaining one of India’s richest biospheres',
-    heroImage: '/images/forest-canopy.jpg',
+    heroImage: 'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988959/cc6364c1-6675-432f-8d98-64c73cb38b99.png',
     gallery: [
-      '/images/forest-canopy.jpg',
-      '/images/jungle-camp.jpg',
-      '/images/nature-walks.jpg',
-      '/images/jungle-safari.jpg',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988959/cc6364c1-6675-432f-8d98-64c73cb38b99.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_resort_cabins_4K_faithful.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788988796/302354b4-08c1-4f98-8ce3-ddc6b60f5b1c.png',
+      'https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,w_1200/v1788989523/dandeli_tiger_4K.png',
     ],
     intro:
       'The Western Ghats of Dandeli represent an ancient rainforest ecosystem older than the Himalayas. Towering teak trees planted during colonial times interlace with wild bamboo clumps and dense evergreen undergrowth. Walking under this dense canopy creates a natural microclimate—cooler, humid, and perpetually reverberating with the sounds of cicadas, woodpeckers, and rustling deer.',

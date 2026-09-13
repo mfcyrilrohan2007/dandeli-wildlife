@@ -34,6 +34,8 @@ export interface TravelPackage {
   nights: number;
   groupCategory: 'all' | 'solo-duo' | 'friends' | 'family' | 'corporate';
   suitableTravellers: string;
+  tripStyle?: string;
+  experienceHighlights?: string[];
   pricePerPerson: number;
   priceRange: string;
   originalPrice?: number;
@@ -57,12 +59,12 @@ export interface TravelPackage {
   featured?: boolean;
 }
 
-export type StayCategory = 'all' | 'forest' | 'river' | 'adventure' | 'family' | 'homestay' | 'camping';
+export type StayCategory = 'all' | 'forest' | 'river' | 'riverside' | 'adventure' | 'family' | 'homestay' | 'nature' | 'camping';
 
 export interface ResortStay {
   id: string;
   name: string;
-  category: 'forest' | 'river' | 'adventure' | 'family' | 'homestay' | 'camping';
+  category: 'forest' | 'river' | 'riverside' | 'adventure' | 'family' | 'homestay' | 'nature' | 'camping';
   categoryLabel: string;
   locationArea: string;
   stayType: string;

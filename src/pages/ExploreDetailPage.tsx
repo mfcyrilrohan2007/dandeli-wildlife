@@ -12,6 +12,8 @@ import {
   MapPin,
   ChevronRight,
   Sparkles,
+  ArrowRight,
+  Layers,
 } from 'lucide-react';
 import { getExploreCategoryBySlug } from '../utils/slugHelpers';
 import { EXPLORE_CATEGORIES } from '../data/exploreData';
@@ -273,6 +275,139 @@ export const ExploreDetailPage: React.FC<ExploreDetailPageProps> = ({ onOpenEnqu
                 </span>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Natural Progression Pathway: Explore → Activity → Package → Plan Your Trip */}
+        <div className="mt-16 sm:mt-20 p-8 sm:p-10 rounded-3xl bg-[#1C1D1F] text-white space-y-8 border border-stone-800 shadow-lg">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-stone-800 pb-5">
+            <div className="space-y-1">
+              <span className="text-[10px] font-sans uppercase tracking-widest text-[#EAE3D8] font-medium flex items-center gap-1.5">
+                <Compass className="w-3.5 h-3.5 text-[#2E6B68]" />
+                <span>Next Step In Your Journey</span>
+              </span>
+              <h2 className="font-serif text-2xl sm:text-3xl font-normal text-white">
+                Turn This Spot Into Your Complete Dandeli Trip
+              </h2>
+              <p className="text-xs sm:text-sm text-stone-400 font-sans font-light">
+                Explore the seamless progression from discovery to certified activities, cottage packages, and tailored itineraries.
+              </p>
+            </div>
+            <Link
+              to="/explore"
+              className="text-xs text-[#EAE3D8] hover:underline flex items-center gap-1 shrink-0"
+            >
+              <span>Back to all destinations</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Step 1: Explore (Current) */}
+            <div className="p-5 rounded-2xl bg-white/10 border border-white/20 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="w-7 h-7 rounded-lg bg-[#2E6B68] text-white font-sans text-xs font-bold flex items-center justify-center">
+                  01
+                </span>
+                <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-sans font-medium">
+                  Current Spot
+                </span>
+              </div>
+              <div className="space-y-1">
+                <h4 className="font-serif text-lg text-white font-normal truncate">
+                  {category.title}
+                </h4>
+                <p className="text-xs text-stone-300 font-sans line-clamp-2">
+                  {category.tagline}
+                </p>
+              </div>
+            </div>
+
+            {/* Step 2: Activity */}
+            <Link
+              to={category.journeyBridge?.activity.slug || '/activities'}
+              className="group p-5 rounded-2xl bg-white/5 hover:bg-white/10 border border-stone-800 hover:border-[#2E6B68] transition-all space-y-3 block"
+            >
+              <div className="flex items-center justify-between">
+                <span className="w-7 h-7 rounded-lg bg-stone-800 group-hover:bg-[#2E6B68] text-stone-300 group-hover:text-white font-sans text-xs font-medium flex items-center justify-center transition-colors">
+                  02
+                </span>
+                <ArrowUpRight className="w-4 h-4 text-stone-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] uppercase tracking-wider text-stone-400 font-sans block">
+                  Matched Activity
+                </span>
+                <h4 className="font-serif text-lg text-white group-hover:text-[#EAE3D8] transition-colors font-normal truncate">
+                  {category.journeyBridge?.activity.title || 'Certified Adventures'}
+                </h4>
+                <p className="text-xs text-stone-400 font-sans line-clamp-2">
+                  {category.journeyBridge?.activity.description || 'Guided by certified river captains and forest rangers.'}
+                </p>
+              </div>
+              <div className="pt-2 text-[11px] font-sans text-[#2E6B68] group-hover:text-emerald-300 transition-colors flex items-center gap-1">
+                <span>View Activity</span>
+                <ArrowRight className="w-3 h-3" />
+              </div>
+            </Link>
+
+            {/* Step 3: Package */}
+            <Link
+              to={category.journeyBridge?.travelPackage.slug || '/packages'}
+              className="group p-5 rounded-2xl bg-white/5 hover:bg-white/10 border border-stone-800 hover:border-[#2E6B68] transition-all space-y-3 block"
+            >
+              <div className="flex items-center justify-between">
+                <span className="w-7 h-7 rounded-lg bg-stone-800 group-hover:bg-[#2E6B68] text-stone-300 group-hover:text-white font-sans text-xs font-medium flex items-center justify-center transition-colors">
+                  03
+                </span>
+                <ArrowUpRight className="w-4 h-4 text-stone-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] uppercase tracking-wider text-stone-400 font-sans block">
+                  Cottage & Meals Bundle
+                </span>
+                <h4 className="font-serif text-lg text-white group-hover:text-[#EAE3D8] transition-colors font-normal truncate">
+                  {category.journeyBridge?.travelPackage.title || 'All-Inclusive Package'}
+                </h4>
+                <p className="text-xs text-stone-400 font-sans line-clamp-2">
+                  {category.journeyBridge?.travelPackage.duration
+                    ? `${category.journeyBridge.travelPackage.duration} with riverside stay & 3 daily meals.`
+                    : 'Riverfront stay with 3 daily buffet meals and permits.'}
+                </p>
+              </div>
+              <div className="pt-2 text-[11px] font-sans text-[#2E6B68] group-hover:text-emerald-300 transition-colors flex items-center gap-1">
+                <span>Explore Package</span>
+                <ArrowRight className="w-3 h-3" />
+              </div>
+            </Link>
+
+            {/* Step 4: Plan Your Trip */}
+            <Link
+              to={category.journeyBridge?.tripPlan.slug || '/trip-plans'}
+              className="group p-5 rounded-2xl bg-white/5 hover:bg-white/10 border border-stone-800 hover:border-[#2E6B68] transition-all space-y-3 block"
+            >
+              <div className="flex items-center justify-between">
+                <span className="w-7 h-7 rounded-lg bg-stone-800 group-hover:bg-[#2E6B68] text-stone-300 group-hover:text-white font-sans text-xs font-medium flex items-center justify-center transition-colors">
+                  04
+                </span>
+                <ArrowUpRight className="w-4 h-4 text-stone-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] uppercase tracking-wider text-stone-400 font-sans block">
+                  Itinerary Planner
+                </span>
+                <h4 className="font-serif text-lg text-white group-hover:text-[#EAE3D8] transition-colors font-normal truncate">
+                  {category.journeyBridge?.tripPlan.title || 'Curated Itinerary'}
+                </h4>
+                <p className="text-xs text-stone-400 font-sans line-clamp-2">
+                  {category.journeyBridge?.tripPlan.spirit || 'Tailored schedule by group type and travel pace.'}
+                </p>
+              </div>
+              <div className="pt-2 text-[11px] font-sans text-[#2E6B68] group-hover:text-emerald-300 transition-colors flex items-center gap-1">
+                <span>Open Planner</span>
+                <ArrowRight className="w-3 h-3" />
+              </div>
+            </Link>
           </div>
         </div>
 

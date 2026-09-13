@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MapPin,
@@ -13,20 +13,26 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onOpenEnquiry }) => {
-  const [scrollY, setScrollY] = useState(0);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  // High-performance GPU parallax: direct transform manipulation via requestAnimationFrame
+  // Completely avoids re-rendering the Hero React component tree on every scroll frame!
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setScrollY(window.scrollY);
+          if (imageContainerRef.current) {
+            const offset = Math.min(window.scrollY * 0.22, 100);
+            imageContainerRef.current.style.transform = `translate3d(0, ${offset}px, 0) scale(1.01)`;
+          }
           ticking = false;
         });
         ticking = true;
       }
     };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -118,25 +124,46 @@ export const Hero: React.FC<HeroProps> = ({ onOpenEnquiry }) => {
     },
   ];
 
-  // Gentle parallax offset for the background photo
-  const imageTranslateY = Math.min(scrollY * 0.22, 100);
-
   return (
     <section className="relative min-h-[88vh] sm:min-h-screen w-full flex flex-col justify-between overflow-hidden text-white select-none">
       {/* Background Image: Vivid, photographic backdrop of Kali River rapids intentionally preserved with natural tones */}
       <div className="absolute inset-0 z-0 overflow-hidden bg-[#141618]">
         <div
-          className="w-full h-[112%] absolute -top-[4%] left-0 transition-transform duration-100 ease-out will-change-transform"
-          style={{
-            transform: `translate3d(0, ${imageTranslateY}px, 0) scale(1.01)`,
-          }}
+          ref={imageContainerRef}
+          className="w-full h-[112%] absolute -top-[4%] left-0 transition-transform duration-75 ease-out will-change-transform"
         >
-          <img
-            src="/images/kali-rafting-hero.jpg"
-            alt="Kali River white water rafting rapids in Dandeli, Western Ghats Karnataka"
-            className="w-full h-full object-cover object-[65%_35%] sm:object-center brightness-[0.98] contrast-[1.02]"
-            referrerPolicy="no-referrer"
-          />
+          <picture>
+            <source
+              media="(max-width: 640px)"
+              srcSet="
+                https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788989523/dandeli_rafting_4k.png 1x,
+                https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_1080/v1788989523/dandeli_rafting_4k.png 2x
+              "
+            />
+            <source
+              media="(max-width: 1024px)"
+              srcSet="
+                https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_1080/v1788989523/dandeli_rafting_4k.png 1x,
+                https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_1600/v1788989523/dandeli_rafting_4k.png 2x
+              "
+            />
+            <img
+              src="https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_1600/v1788989523/dandeli_rafting_4k.png"
+              srcSet="
+                https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_640/v1788989523/dandeli_rafting_4k.png 640w,
+                https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_1080/v1788989523/dandeli_rafting_4k.png 1080w,
+                https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_1600/v1788989523/dandeli_rafting_4k.png 1600w,
+                https://res.cloudinary.com/joyorpxh/image/upload/f_auto,q_auto,c_fill,w_1920/v1788989523/dandeli_rafting_4k.png 1920w
+              "
+              sizes="100vw"
+              alt="Authentic Kali River white water rafting rapids in Dandeli, Western Ghats Karnataka"
+              className="w-full h-full object-cover object-[65%_35%] sm:object-center brightness-[0.98] contrast-[1.02]"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              referrerPolicy="no-referrer"
+            />
+          </picture>
         </div>
 
         {/* Natural neutral gradient overlays: Keep the blue sky, turquoise river, and forest visible */}
@@ -164,13 +191,13 @@ export const Hero: React.FC<HeroProps> = ({ onOpenEnquiry }) => {
 
           {/* Distinguished Travel Masthead: DANDELI */}
           <div className="pt-1">
-            <span className="font-serif text-6xl xs:text-7xl sm:text-8xl md:text-9xl font-normal tracking-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.6)] block leading-[0.95]">
+            <span className="font-serif text-5xl xs:text-6xl sm:text-8xl md:text-9xl font-normal tracking-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.6)] block leading-[0.95]">
               DANDELI
             </span>
           </div>
 
           {/* Editorial Serif Headline */}
-          <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic text-white/95 leading-[1.18] drop-shadow-md">
+          <h1 className="text-xl xs:text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic text-white/95 leading-[1.18] drop-shadow-md">
             Some places are better{' '}
             <span className="font-sans not-italic font-semibold text-[#EAE3D8]">
               experienced

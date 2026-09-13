@@ -8,7 +8,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onOpenEnquiry }) => {
   return (
-    <footer className="bg-[#141517] text-stone-300 pt-16 sm:pt-20 pb-12 border-t border-white/10 relative overflow-hidden">
+    <footer className="bg-[#141517] text-stone-300 pt-16 sm:pt-20 pb-24 sm:pb-12 border-t border-white/10 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         {/* Top Callout Banner */}
         <div className="p-8 sm:p-12 rounded-2xl bg-[#1C1D1F] border border-white/10 flex flex-col lg:flex-row items-center justify-between gap-8 text-center lg:text-left">
@@ -94,6 +94,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenEnquiry }) => {
               <li><Link to="/trip-plans" className="hover:text-white transition-colors">Trip Plans</Link></li>
               <li><Link to="/packages" className="hover:text-white transition-colors">Travel Packages</Link></li>
               <li><Link to="/resorts" className="hover:text-white transition-colors">Resorts & Stays</Link></li>
+              <li><Link to="/gallery" className="hover:text-white transition-colors">Customer Gallery</Link></li>
               <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="hover:text-white transition-colors">Contact & Enquiry</Link></li>
             </ul>

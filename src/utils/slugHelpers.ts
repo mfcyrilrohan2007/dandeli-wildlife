@@ -1,6 +1,7 @@
 import { ACTIVITIES, TRAVEL_PACKAGES, RESORT_STAYS } from '../data/dandeliData';
 import { TRIP_PLANS, TripCategory } from '../components/FindYourTrip';
 import { EXPLORE_CATEGORIES, ExploreCategory } from '../data/exploreData';
+import { DANDELI_DESTINATIONS, DandeliDestination } from '../data/destinationsData';
 import { Activity, TravelPackage, ResortStay } from '../types';
 
 // Activity Slug Mapping
@@ -101,18 +102,87 @@ export function getCleanActivitySlug(id: string): string {
 
 // Trip Plan Slug Helper
 export function getTripPlanBySlug(slug: string) {
-  const key = slug.toLowerCase() as TripCategory;
-  return TRIP_PLANS[key] || undefined;
+  const key = slug.toLowerCase();
+  if (key === 'couples') return TRIP_PLANS['duo'];
+  if (key === 'corporate' || key === 'group') return TRIP_PLANS['groups'];
+  return (TRIP_PLANS as Record<string, any>)[key] || undefined;
 }
 
-// Explore Category Slug Helper
+// Explore Destination & Category Slug Mapping
+export const EXPLORE_SLUG_ALIASES: Record<string, string> = {
+  'river-rapids': 'kali-rapids',
+  'bird-corridor': 'hornbill-trail',
+  'waterfalls-springs': 'sathodi-falls',
+  'wilderness-camping': 'riverside-starlight-camping',
+  'nature-trails': 'kulgi-botanical-trail',
+  'syntheri': 'syntheri-rocks',
+  'sathodi': 'sathodi-falls',
+  'magod': 'magod-falls',
+  'kavala': 'kavala-caves',
+  'sykes': 'sykes-point',
+  'moulangi': 'moulangi-ecopark',
+  'anshi': 'anshi-safari',
+  'coracle': 'coracle-drift',
+  'jacuzzi': 'natural-jacuzzi',
+};
+
+// Explore Category & Destination Slug Helper
 export function getExploreCategoryBySlug(slug: string): ExploreCategory | undefined {
   const normalized = slug.toLowerCase();
-  return EXPLORE_CATEGORIES[normalized];
+  const aliased = EXPLORE_SLUG_ALIASES[normalized] || normalized;
+
+  // 1. Check direct EXPLORE_CATEGORIES
+  if (EXPLORE_CATEGORIES[aliased]) {
+    return EXPLORE_CATEGORIES[aliased];
+  }
+  if (EXPLORE_CATEGORIES[normalized]) {
+    return EXPLORE_CATEGORIES[normalized];
+  }
+
+  // 2. Check DANDELI_DESTINATIONS
+  const destination = DANDELI_DESTINATIONS.find(
+    (d) => d.slug.toLowerCase() === aliased || d.id.toLowerCase() === aliased || d.slug.toLowerCase() === normalized
+  );
+
+  if (destination) {
+    return {
+      slug: destination.slug,
+      title: destination.name,
+      subtitle: `${destination.category} • ${destination.zone}`,
+      tagline: destination.shortDescription,
+      heroImage: destination.image,
+      gallery: destination.gallery.length > 0 ? destination.gallery : [destination.image],
+      intro: destination.intro,
+      whatToExpect: destination.whatToExpect,
+      duration: destination.duration,
+      suitableFor: destination.suitableFor,
+      bestSeason: destination.bestTime,
+      timing: destination.usefulHighlight,
+      highlights: destination.detailedHighlights,
+      thingsToKnow: destination.thingsToKnow,
+      relatedSlugs: ['rafting', 'jungle-safari', 'waterfalls', 'nature'].filter((s) => s !== destination.slug),
+      accentColor: destination.category === 'River & Water' || destination.category === 'Waterfalls' ? '#2E6B68' : '#1B4931',
+      elevationOrArea: destination.location,
+      destination,
+      journeyBridge: destination.journeyBridge,
+    };
+  }
+
+  return undefined;
 }
 
-// Resort Slug Helper
+// Resort Slug Aliases & Helper
+export const RESORT_SLUG_ALIASES: Record<string, string> = {
+  'kali-river-resort': 'kali-riverbank-lodge',
+  'hornbill-nest-resort': 'hornbill-canopy-treehouses',
+  'green-woods-nature-camp': 'kogilban-nature-homestay',
+  'bison-river-resort': 'bison-valley-adventure-camp',
+  'river-edge-adventure-camp': 'starry-kali-glamping-camp',
+  'white-water-village': 'kali-riverwoods-family-resort',
+};
+
 export function getResortBySlug(slug: string): ResortStay | undefined {
   const normalized = slug.toLowerCase();
-  return RESORT_STAYS.find((r) => r.id.toLowerCase() === normalized);
+  const aliased = RESORT_SLUG_ALIASES[normalized] || normalized;
+  return RESORT_STAYS.find((r) => r.id.toLowerCase() === aliased || r.id.toLowerCase() === normalized);
 }

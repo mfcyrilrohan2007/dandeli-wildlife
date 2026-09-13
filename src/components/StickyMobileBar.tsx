@@ -26,7 +26,7 @@ export const StickyMobileBar: React.FC<StickyMobileBarProps> = ({
           href="https://wa.me/919481245890?text=Hello%20Dandeli%20Wilds%2C%20I%20am%20planning%20a%20trip%20to%20Dandeli"
           target="_blank"
           rel="noreferrer"
-          className="flex-1 min-h-[46px] px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-stone-200 flex items-center justify-center gap-2 active:scale-98 transition-all text-xs font-mono font-medium"
+          className="flex-1 min-h-[46px] px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-stone-200 flex items-center justify-center gap-2 active:scale-[0.97] transition-all duration-150 text-xs font-mono font-medium interactive-tap"
           title="Direct WhatsApp & Call Support"
         >
           <div className="w-5 h-5 rounded-full bg-[#2E6B68]/40 text-[#EAE3D8] flex items-center justify-center shrink-0">
@@ -41,7 +41,7 @@ export const StickyMobileBar: React.FC<StickyMobileBarProps> = ({
         <button
           type="button"
           onClick={() => onOpenEnquiry('Sticky Mobile Bar CTA')}
-          className="flex-1 min-h-[46px] px-4 py-2 rounded-xl bg-[#2E6B68] hover:bg-[#235452] text-white font-sans font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg active:scale-98 transition-all cursor-pointer"
+          className="flex-1 min-h-[46px] px-4 py-2 rounded-xl bg-[#2E6B68] hover:bg-[#235452] text-white font-sans font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg active:scale-[0.97] transition-all duration-150 cursor-pointer interactive-tap"
         >
           <span>PLAN TRIP</span>
           <ArrowUpRight className="w-4 h-4 stroke-[2]" />
