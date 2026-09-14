@@ -606,21 +606,21 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenEnquiry }) => {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
               <span className="text-xs font-manrope uppercase tracking-widest text-[#2E6B68] font-semibold flex items-center gap-2">
-                <Star className="w-3.5 h-3.5 fill-[#2E6B68] text-[#2E6B68]" />
-                <span>Guest Experiences</span>
+                <Compass className="w-3.5 h-3.5 text-[#2E6B68]" />
+                <span>Guest Feedback & Field Notes</span>
               </span>
               <h2 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#1C1D1F]">
-                What Travellers Say
+                Guest Feedback & Trip Notes
               </h2>
               <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-light">
-                Genuine stories from families, friends, and solo adventurers who explored Dandeli with us.
+                Direct reflections from families, corporate squads, and solo nature travelers who navigated the Kali rapids and Dandeli rainforests with our local river captains.
               </p>
             </div>
 
             <button
               type="button"
-              onClick={() => onOpenEnquiry('Guest Review Enquiry')}
-              className="inline-flex items-center gap-2 self-start md:self-auto min-h-[44px] py-2.5 px-5 sm:px-6 rounded-xl bg-[#FAF7F2] hover:bg-white border border-[#E5DFD7] text-[#1C1D1F] text-xs font-manrope font-semibold uppercase tracking-wider transition-all shadow-2xs active:scale-95 cursor-pointer"
+              onClick={() => onOpenEnquiry('Guest Experience Feedback')}
+              className="inline-flex items-center gap-2 self-start md:self-auto min-h-[44px] py-2.5 px-5 sm:px-6 rounded-xl bg-white hover:bg-[#FAF7F2] border border-[#E5DFD7] text-[#1C1D1F] text-xs font-manrope font-semibold uppercase tracking-wider transition-all shadow-xs active:scale-95 cursor-pointer"
             >
               <span>Share Your Experience</span>
               <ArrowUpRight className="w-4 h-4 text-[#2E6B68]" />
@@ -629,50 +629,83 @@ export const HomePage: React.FC<HomePageProps> = ({ onOpenEnquiry }) => {
 
           {/* Genuine Reviews Horizontal Carousel on Mobile / 3-Column Grid on Desktop */}
           <div className="flex md:grid overflow-x-auto md:overflow-visible pb-4 md:pb-0 snap-x snap-mandatory md:grid-cols-3 gap-4 sm:gap-8 -mx-4 px-4 sm:mx-0 sm:px-0 no-scrollbar">
-            {TESTIMONIALS.map((t) => (
-              <div
-                key={t.id}
-                className="w-[85vw] max-w-[360px] shrink-0 snap-center md:w-auto md:max-w-none p-5 sm:p-8 rounded-2xl bg-white border border-[#E5DFD7] shadow-sm flex flex-col justify-between space-y-5 sm:space-y-6"
-              >
-                <div className="space-y-4">
-                  {/* Clean Star Treatment */}
-                  <div className="flex items-center gap-1 text-amber-500">
-                    {[...Array(t.rating || 5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-4 h-4 fill-amber-500 text-amber-500"
-                      />
-                    ))}
-                  </div>
+            {TESTIMONIALS.map((t, idx) => {
+              // Extract initials for clean typographic monogram badge instead of stock photos
+              const initials = t.guestName
+                .split(' ')
+                .filter((w) => w && w !== '&')
+                .slice(0, 2)
+                .map((w) => w[0])
+                .join('');
 
-                  {/* Review Text */}
-                  <p className="text-stone-700 text-xs sm:text-sm leading-relaxed font-sans italic font-normal">
-                    “{t.text}”
-                  </p>
-                </div>
+              return (
+                <div
+                  key={t.id}
+                  className="w-[85vw] max-w-[360px] shrink-0 snap-center md:w-auto md:max-w-none p-5 sm:p-8 rounded-2xl bg-white border border-[#E5DFD7] shadow-sm flex flex-col justify-between space-y-5 sm:space-y-6"
+                >
+                  <div className="space-y-4">
+                    {/* Category / Experience Badge */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-sans font-medium uppercase tracking-wider px-2.5 py-1 rounded-md bg-[#FAF7F2] text-[#2E6B68] border border-[#E5DFD7]">
+                        {t.experience.split('(')[0].trim()}
+                      </span>
+                      <span className="text-[11px] font-sans text-stone-400">
+                        {t.date}
+                      </span>
+                    </div>
 
-                {/* Reviewer Metadata */}
-                <div className="pt-4 border-t border-[#E5DFD7] flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-stone-200 shrink-0 border border-[#E5DFD7]">
-                    <img
-                      src={t.avatar}
-                      alt={t.guestName}
-                      loading="lazy"
-                      className="w-full h-full object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="font-serif text-sm font-normal text-[#1C1D1F] truncate">
-                      {t.guestName}
-                    </h4>
-                    <p className="text-[11px] text-stone-500 font-sans truncate">
-                      {t.hometown} • {t.experience}
+                    {/* Review Text */}
+                    <p className="text-stone-700 text-xs sm:text-sm leading-relaxed font-sans italic font-normal">
+                      “{t.text}”
                     </p>
                   </div>
+
+                  {/* Reviewer Metadata with Dignified Monogram Badge */}
+                  <div className="pt-4 border-t border-[#E5DFD7] flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-full bg-[#FAF7F2] text-[#1C1D1F] border border-[#E5DFD7] font-serif font-medium text-xs flex items-center justify-center shrink-0">
+                      {initials || 'DW'}
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="font-serif text-sm font-normal text-[#1C1D1F] truncate">
+                        {t.guestName}
+                      </h4>
+                      <p className="text-[11px] text-stone-500 font-sans truncate">
+                        {t.hometown} • Verified Trip
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+          </div>
+
+          {/* Share Your Feedback Banner */}
+          <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#E5DFD7] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 text-center sm:text-left">
+            <div className="space-y-1 max-w-xl">
+              <h3 className="font-serif text-lg sm:text-xl font-normal text-[#1C1D1F]">
+                Recently returned from a trip with Dandeli Wilds?
+              </h3>
+              <p className="text-xs sm:text-sm text-stone-600 font-sans font-light">
+                Help future travelers plan their journeys by sharing your river notes, homestay feedback, or guide shoutouts.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => onOpenEnquiry('Guest Experience Feedback')}
+                className="min-h-[44px] px-5 py-2.5 rounded-xl bg-[#2E6B68] hover:bg-[#235452] text-white text-xs font-sans font-medium uppercase tracking-wider transition-colors shadow-xs active:scale-95 cursor-pointer"
+              >
+                Submit Feedback
+              </button>
+              <a
+                href="https://wa.me/919481245890?text=Hello%20Dandeli%20Wilds%2C%20I%20would%20like%20to%20share%20my%20feedback%20and%20photos%20from%20our%20recent%20trip"
+                target="_blank"
+                rel="noreferrer"
+                className="min-h-[44px] px-4 py-2.5 rounded-xl bg-[#FAF7F2] hover:bg-[#EAE3D8] border border-[#E5DFD7] text-[#1C1D1F] text-xs font-sans font-medium transition-colors flex items-center justify-center"
+              >
+                WhatsApp Desk
+              </a>
+            </div>
           </div>
         </div>
       </section>
